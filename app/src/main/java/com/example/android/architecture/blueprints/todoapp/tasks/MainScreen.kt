@@ -30,20 +30,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Checkbox
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -53,18 +46,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.data.Task
-import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ACTIVE_TASKS
-import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ALL_TASKS
-import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.COMPLETED_TASKS
 import com.example.android.architecture.blueprints.todoapp.util.LoadingContent
-import com.example.android.architecture.blueprints.todoapp.util.TasksTopAppBar
+import com.example.android.architecture.blueprints.todoapp.widget.AppBar
 import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 
 @Composable
-fun TasksScreen(
+fun MainScreen(
     @StringRes userMessage: Int,
     onAddTask: () -> Unit,
     onTaskClick: (Task) -> Unit,
@@ -76,52 +65,31 @@ fun TasksScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            TasksTopAppBar(
-                onFilterAllTasks = { viewModel.setFiltering(ALL_TASKS) },
-                onFilterActiveTasks = { viewModel.setFiltering(ACTIVE_TASKS) },
-                onFilterCompletedTasks = { viewModel.setFiltering(COMPLETED_TASKS) },
-                onClearCompletedTasks = { viewModel.clearCompletedTasks() },
-                onRefresh = { viewModel.refresh() }
-            )
+            AppBar(titleId = R.string.app_name)
         },
-        modifier = modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(onClick = onAddTask) {
-                Icon(Icons.Filled.Add, stringResource(id = R.string.add_task))
-            }
+        modifier = modifier.fillMaxSize()
+    )
+    {
+        Column {
+            Modifier.padding(it)
+            MainScreenItem(text = "first")
+            MainScreenItem(text = "first")
         }
-    ) { paddingValues ->
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    }
+}
 
-        TasksContent(
-            loading = uiState.isLoading,
-            tasks = uiState.items,
-            currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
-            noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
-            noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
-            onRefresh = viewModel::refresh,
-            onTaskClick = onTaskClick,
-            onTaskCheckedChange = viewModel::completeTask,
-            modifier = Modifier.padding(paddingValues)
-        )
-
-        // Check for user messages to display on the screen
-        uiState.userMessage?.let { message ->
-            val snackbarText = stringResource(message)
-            LaunchedEffect(scaffoldState, viewModel, message, snackbarText) {
-                scaffoldState.snackbarHostState.showSnackbar(snackbarText)
-                viewModel.snackbarMessageShown()
+@Preview
+@Composable
+private fun MainScreenItem(text: String = "default") {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                println("First row clicked!")
             }
-        }
-
-        // Check if there's a userMessage to show to the user
-        val currentOnUserMessageDisplayed by rememberUpdatedState(onUserMessageDisplayed)
-        LaunchedEffect(userMessage) {
-            if (userMessage != 0) {
-                viewModel.showEditResultMessage(userMessage)
-                currentOnUserMessageDisplayed()
-            }
-        }
+            .padding(16.dp)
+    ) {
+        Text(text)
     }
 }
 

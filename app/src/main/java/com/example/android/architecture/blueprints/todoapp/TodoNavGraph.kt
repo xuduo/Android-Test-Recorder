@@ -32,7 +32,7 @@ import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs.
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskScreen
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsScreen
 import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailScreen
-import com.example.android.architecture.blueprints.todoapp.tasks.TasksScreen
+import com.example.android.architecture.blueprints.todoapp.tasks.MainScreen
 
 @Composable
 fun TodoNavGraph(
@@ -54,7 +54,7 @@ fun TodoNavGraph(
                 navArgument(USER_MESSAGE_ARG) { type = NavType.IntType; defaultValue = 0 }
             )
         ) { entry ->
-            TasksScreen(
+            MainScreen(
                 userMessage = entry.arguments?.getInt(USER_MESSAGE_ARG)!!,
                 onUserMessageDisplayed = { entry.arguments?.putInt(USER_MESSAGE_ARG, 0) },
                 onAddTask = { navActions.navigateToAddEditTask(R.string.add_task, null) },

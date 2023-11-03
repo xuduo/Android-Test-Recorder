@@ -46,7 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.util.LoadingContent
-import com.example.android.architecture.blueprints.todoapp.util.TaskDetailTopAppBar
+import com.example.android.architecture.blueprints.todoapp.widget.AppBar
 import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 
 @Composable
@@ -62,7 +62,7 @@ fun TaskDetailScreen(
         scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TaskDetailTopAppBar(onBack = onBack, onDelete = viewModel::deleteTask)
+            AppBar(R.string.edit_task)
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onEditTask(viewModel.taskId) }) {

@@ -37,7 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.util.LoadingContent
-import com.example.android.architecture.blueprints.todoapp.util.StatisticsTopAppBar
+import com.example.android.architecture.blueprints.todoapp.widget.AppBar
 import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 
 @Composable
@@ -48,7 +48,7 @@ fun StatisticsScreen(
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { StatisticsTopAppBar() }
+        topBar = { AppBar(titleId = R.string.title_hint) }
     ) { paddingValues ->
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
