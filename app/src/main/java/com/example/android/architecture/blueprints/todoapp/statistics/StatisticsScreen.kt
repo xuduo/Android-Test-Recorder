@@ -42,14 +42,13 @@ import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 
 @Composable
 fun StatisticsScreen(
-    openDrawer: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StatisticsViewModel = hiltViewModel(),
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { StatisticsTopAppBar(openDrawer) }
+        topBar = { StatisticsTopAppBar() }
     ) { paddingValues ->
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

@@ -31,7 +31,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,7 +47,6 @@ import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 
 @Composable
 fun TasksTopAppBar(
-    openDrawer: () -> Unit,
     onFilterAllTasks: () -> Unit,
     onFilterActiveTasks: () -> Unit,
     onFilterCompletedTasks: () -> Unit,
@@ -57,11 +55,6 @@ fun TasksTopAppBar(
 ) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
-        navigationIcon = {
-            IconButton(onClick = openDrawer) {
-                Icon(Icons.Filled.Menu, stringResource(id = R.string.open_drawer))
-            }
-        },
         actions = {
             FilterTasksMenu(onFilterAllTasks, onFilterActiveTasks, onFilterCompletedTasks)
             MoreTasksMenu(onClearCompletedTasks, onRefresh)
@@ -137,14 +130,9 @@ private fun TopAppBarDropdownMenu(
 }
 
 @Composable
-fun StatisticsTopAppBar(openDrawer: () -> Unit) {
+fun StatisticsTopAppBar() {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.statistics_title)) },
-        navigationIcon = {
-            IconButton(onClick = openDrawer) {
-                Icon(Icons.Filled.Menu, stringResource(id = R.string.open_drawer))
-            }
-        },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -187,7 +175,7 @@ fun AddEditTaskTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
 private fun TasksTopAppBarPreview() {
     AppCompatTheme {
         Surface {
-            TasksTopAppBar({}, {}, {}, {}, {}, {})
+            TasksTopAppBar({}, {}, {}, {}, {})
         }
     }
 }
@@ -197,7 +185,7 @@ private fun TasksTopAppBarPreview() {
 private fun StatisticsTopAppBarPreview() {
     AppCompatTheme {
         Surface {
-            StatisticsTopAppBar { }
+            StatisticsTopAppBar()
         }
     }
 }
