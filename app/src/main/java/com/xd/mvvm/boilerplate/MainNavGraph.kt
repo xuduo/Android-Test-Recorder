@@ -33,8 +33,6 @@ import com.xd.mvvm.boilerplate.TodoDestinationsArgs.TASK_ID_ARG
 import com.xd.mvvm.boilerplate.TodoDestinationsArgs.TITLE_ARG
 import com.xd.mvvm.boilerplate.TodoDestinationsArgs.USER_MESSAGE_ARG
 import com.xd.mvvm.boilerplate.addedittask.AddEditTaskScreen
-import com.xd.mvvm.boilerplate.statistics.StatisticsScreen
-import com.xd.mvvm.boilerplate.taskdetail.TaskDetailScreen
 import com.xd.mvvm.boilerplate.tasks.MainScreen
 import com.xd.mvvm.boilerplate.weather.WeatherScreen
 
@@ -70,9 +68,6 @@ fun MainNavGraph(
             composable(MainDestinations.WEATHER) {
                 WeatherScreen()
             }
-            composable(MainDestinations.STATISTICS_ROUTE) {
-                StatisticsScreen()
-            }
             composable(
                 MainDestinations.ADD_EDIT_TASK_ROUTE,
                 arguments = listOf(
@@ -89,15 +84,6 @@ fun MainNavGraph(
                         )
                     },
                     onBack = { navController.popBackStack() }
-                )
-            }
-            composable(MainDestinations.TASK_DETAIL_ROUTE) {
-                TaskDetailScreen(
-                    onEditTask = { taskId ->
-                        navActions.navigateToAddEditTask(R.string.edit_task, taskId)
-                    },
-                    onBack = { navController.popBackStack() },
-                    onDeleteTask = { navActions.navigateToTasks(DELETE_RESULT_OK) }
                 )
             }
         }
