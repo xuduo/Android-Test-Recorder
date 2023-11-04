@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.statistics
+package com.xd.mvvm.boilerplate.statistics
 
-import com.example.android.architecture.blueprints.todoapp.data.Task
+import com.xd.mvvm.boilerplate.data.Task
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
 import org.junit.Test

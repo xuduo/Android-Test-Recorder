@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -13,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -26,13 +28,13 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.android.architecture.blueprints.main"
+        applicationId = "com.xd.mvvm.boilerplate"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.example.android.architecture.blueprints.todoapp.CustomTestRunner"
+        testInstrumentationRunner = "com.xd.mvvm.boilerplate.CustomTestRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -81,18 +83,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = org.gradle.api.JavaVersion.VERSION_1_8
-        targetCompatibility =  org.gradle.api.JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
         jvmTarget = "1.8"
     }
 
-//    kotlin {
+    //    kotlin {
 //        jvmToolchain(18)
 //    }
-    packagingOptions {
+    fun Packaging.() {
         resources {
             excludes += setOf("META-INF/AL2.0", "META-INF/LGPL2.1")
         }
@@ -101,7 +103,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
-    namespace = "com.example.android.architecture.blueprints.todoapp"
+    namespace = "com.xd.mvvm.boilerplate"
     buildToolsVersion = "34.0.0"
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -120,17 +122,15 @@ android {
 dependencies {
 
     // App dependencies
+    implementation(project(":model"))
     implementation(libs.androidx.annotation)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.timber)
     implementation(libs.androidx.test.espresso.idling.resources)
 
     // Architecture Components
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
-    implementation(libs.androidx.lifecycle.runtimeCompose)
-    implementation(libs.androidx.lifecycle.viewModelCompose)
 
     // Hilt
     implementation(libs.hilt.android.core)
@@ -151,6 +151,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.accompanist.appcompat.theme)
     implementation(libs.accompanist.swiperefresh)
 

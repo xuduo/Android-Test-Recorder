@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.data
+package com.xd.mvvm.boilerplate.data
 
 import androidx.annotation.VisibleForTesting
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import java.util.UUID
 
 /**
  * Implementation of a tasks repository with static access to the data for easy testing.

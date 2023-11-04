@@ -4,14 +4,14 @@ annotation = "1.7.0"
 androidDesugarJdkLibs = "1.2.2"
 androidGradlePlugin = "8.1.2"
 androidxActivity = "1.8.0"
-androidxAppCompat = "1.5.1"
+androidxAppCompat = "1.6.1"
 androidxArchCore = "2.2.0"
 androidxBrowser = "1.4.0"
 androidxComposeBom = "2023.01.00"
 androidxComposeCompiler = "1.5.3"
 androidxCompose = "1.2.0"
 androidxComposeRuntimeTracing = "1.0.0-alpha01"
-androidxCore = "1.9.0"
+androidxCore = "1.12.0"
 androidxCoreSplashscreen = "1.0.0"
 androidxDataStore = "1.0.0"
 androidxEspresso = "3.5.1"
@@ -39,13 +39,13 @@ hiltExt = "1.0.0"
 jacoco = "0.8.7"
 junit4 = "4.13.2"
 kotlin = "1.9.10"
-kotlinxCoroutines = "1.6.4"
+kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.5.0"
 ksp = "1.9.10-1.0.13"
 lint = "30.3.1"
 # @keep
-minSdk = "21"
+minSdk = "26"
 okhttp = "4.10.0"
 protobuf = "3.21.12"
 protobufPlugin = "0.8.19"
@@ -58,6 +58,10 @@ timber = "5.0.1"
 targetSdk = "34"
 truth = "1.1.2"
 turbine = "0.12.1"
+junit = "1.1.5"
+material = "1.10.0"
+moshi = "1.15.0"
+runtime-livedata = "1.5.4"
 
 [libraries]
 accompanist-appcompat-theme = { group = "com.google.accompanist", name = "accompanist-themeadapter-appcompat", version.ref = "accompanist" }
@@ -80,7 +84,7 @@ androidx-compose-material-iconsExtended = { group = "androidx.compose.material",
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtime-livedata" }
 androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidxComposeRuntimeTracing" }
 androidx-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
@@ -140,6 +144,11 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshikotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

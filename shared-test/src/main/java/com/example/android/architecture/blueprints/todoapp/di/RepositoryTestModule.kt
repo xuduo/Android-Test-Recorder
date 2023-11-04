@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.di
+package com.xd.mvvm.boilerplate.di
 
-import com.example.android.architecture.blueprints.todoapp.data.FakeTaskRepository
-import com.example.android.architecture.blueprints.todoapp.data.TaskRepository
+import com.xd.mvvm.boilerplate.data.FakeTaskRepository
+import com.xd.mvvm.boilerplate.data.TaskRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.statistics
+package com.xd.mvvm.boilerplate.statistics
 
-import com.example.android.architecture.blueprints.todoapp.MainCoroutineRule
-import com.example.android.architecture.blueprints.todoapp.data.FakeTaskRepository
-import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.google.common.truth.Truth.assertThat
+import com.xd.mvvm.boilerplate.MainCoroutineRule
+import com.xd.mvvm.boilerplate.data.FakeTaskRepository
+import com.xd.mvvm.boilerplate.data.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

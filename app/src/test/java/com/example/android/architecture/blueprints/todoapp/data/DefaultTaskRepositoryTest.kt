@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.data
+package com.xd.mvvm.boilerplate.data
 
-import com.example.android.architecture.blueprints.todoapp.data.source.local.FakeTaskDao
-import com.example.android.architecture.blueprints.todoapp.data.source.network.FakeNetworkDataSource
 import com.google.common.truth.Truth.assertThat
+import com.xd.mvvm.boilerplate.data.source.local.FakeTaskDao
+import com.xd.mvvm.boilerplate.data.source.network.FakeNetworkDataSource
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope

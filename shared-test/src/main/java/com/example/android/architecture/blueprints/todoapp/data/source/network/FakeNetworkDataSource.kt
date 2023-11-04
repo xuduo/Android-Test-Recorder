@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.data.source.network
+package com.xd.mvvm.boilerplate.data.source.network
 
 class FakeNetworkDataSource(
     var tasks: MutableList<NetworkTask>? = mutableListOf()

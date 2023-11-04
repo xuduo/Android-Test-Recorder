@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp
+package com.xd.mvvm.boilerplate
 
 import androidx.activity.ComponentActivity
 import dagger.hilt.android.AndroidEntryPoint

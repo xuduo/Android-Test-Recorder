@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.addedittask
+package com.xd.mvvm.boilerplate.addedittask
 
 import androidx.lifecycle.SavedStateHandle
-import com.example.android.architecture.blueprints.todoapp.MainCoroutineRule
-import com.example.android.architecture.blueprints.todoapp.R.string
-import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs
-import com.example.android.architecture.blueprints.todoapp.data.FakeTaskRepository
-import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.google.common.truth.Truth.assertThat
+import com.xd.mvvm.boilerplate.MainCoroutineRule
+import com.xd.mvvm.boilerplate.R.string
+import com.xd.mvvm.boilerplate.TodoDestinationsArgs
+import com.xd.mvvm.boilerplate.data.FakeTaskRepository
+import com.xd.mvvm.boilerplate.data.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.di
+package com.xd.mvvm.boilerplate.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.android.architecture.blueprints.todoapp.data.source.local.ToDoDatabase
+import com.xd.mvvm.boilerplate.data.source.local.ToDoDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
