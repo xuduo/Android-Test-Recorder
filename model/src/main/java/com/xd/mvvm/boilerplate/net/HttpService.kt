@@ -6,6 +6,8 @@ import com.xd.mvvm.boilerplate.data.D
 import com.xd.mvvm.boilerplate.data.Err
 import com.xd.mvvm.boilerplate.data.Success
 import com.xd.mvvm.boilerplate.logger.Logger
+import com.xd.mvvm.boilerplate.sharedpref.BooleanSharedPreferenceLiveData
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
@@ -20,11 +22,13 @@ class HttpService @Inject constructor(
     private val moshi: Moshi,
     private val host: String,
     private val path: String = "",
+    private val simulateNetworkError: BooleanSharedPreferenceLiveData,
+    private val simulateNetworkLatency: BooleanSharedPreferenceLiveData,
     private val scheme: String = "https"
 ) {
     private val logger = Logger("HttpService")
 
-    fun <T> fetchData(
+    suspend fun <T> fetchData(
         endpoint: String,
         clazz: Class<T>,
         parameters: Map<String, Any> = emptyMap(),
@@ -33,8 +37,17 @@ class HttpService @Inject constructor(
         val timestamp = System.currentTimeMillis()
         val urlBuilder = okhttp3.HttpUrl.Builder()
             .scheme(scheme) // Assuming HTTPS, change as needed
-            .host(host).addPathSegments(path)
+            .host(host)
+            .addPathSegments(path)
             .addPathSegments(endpoint)
+
+        if (simulateNetworkError.value == true) {
+            urlBuilder.host("x.com")
+        }
+
+        if (simulateNetworkLatency.value == true) {
+            delay(3000)
+        }
 
         // Add parameters to the URL
         parameters.forEach { (key, value) ->

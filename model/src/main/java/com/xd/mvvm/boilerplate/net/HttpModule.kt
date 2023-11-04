@@ -3,6 +3,7 @@ package com.xd.mvvm.boilerplate.net
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.xd.mvvm.boilerplate.data.LocalDateTimeAdapter
+import com.xd.mvvm.boilerplate.sharedpref.BooleanSharedPreferenceLiveData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,8 +32,19 @@ object HttpModule {
     @Named("weather")
     fun provideWeatherHttp(
         client: OkHttpClient,
-        moshi: Moshi
+        moshi: Moshi,
+        @Named("config_simulate_http_error")
+        simulateNetworkError: BooleanSharedPreferenceLiveData,
+        @Named("config_simulate_http_latency")
+        simulateNetworkLatency: BooleanSharedPreferenceLiveData
     ): HttpService {
-        return HttpService(client, moshi, "api.open-meteo.com", "v1/")
+        return HttpService(
+            client,
+            moshi,
+            "api.open-meteo.com",
+            "v1/",
+            simulateNetworkError,
+            simulateNetworkLatency
+        )
     }
 }
