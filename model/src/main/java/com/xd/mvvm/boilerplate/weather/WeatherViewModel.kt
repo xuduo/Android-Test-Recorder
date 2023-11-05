@@ -35,15 +35,15 @@ class WeatherViewModel @Inject constructor(
     private val http: HttpService
 ) : ViewModel() {
     private val logger = Logger("WeatherViewModel")
-    private val _weather = MutableLiveData<D<Weather>>(Loading())
-    val weather: LiveData<D<Weather>> get() = _weather
+    val weather = MutableLiveData<D<Weather>>(Loading())
 
     init {
+        logger.d("WeatherViewModel.init")
         fetchWeather()
     }
 
     fun fetchWeather() {
-        _weather.postValue(Loading(_weather.value?.value))
+        weather.postValue(Loading(weather.value?.value))
         io {
             val data = http.fetchData(
                 "forecast",
@@ -56,7 +56,7 @@ class WeatherViewModel @Inject constructor(
                 )
             )
             logger.d("fetchWeather postValue")
-            _weather.postValue(data)
+            weather.postValue(data)
         }
     }
 

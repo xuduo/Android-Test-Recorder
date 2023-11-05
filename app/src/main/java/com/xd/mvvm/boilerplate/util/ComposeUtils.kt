@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -54,7 +55,9 @@ fun <T> DataLoadingContent(
 
             is Err -> {
                 L.d("DataLoadingContent D.Error")
-                EmptyContent()
+                wrapInLazyColumn {
+                    errorContent()
+                }
             }
 
             is Loading -> {
@@ -63,16 +66,32 @@ fun <T> DataLoadingContent(
                 data.value?.let {
                     content(it)
                 } ?: run {
-                    emptyContent()
+                    wrapInLazyColumn {
+                        emptyContent()
+                    }
                 }
             }
 
-            null -> emptyContent()
+            null -> wrapInLazyColumn {
+                emptyContent()
+            }
         }
 
         PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))
     }
 
+}
+
+// PullRefreshIndicator only works with a LazyColumn?
+@Composable
+private fun wrapInLazyColumn(content: @Composable () -> Unit) {
+    LazyColumn(Modifier.fillMaxSize()) {
+        items(1) {
+            Box(Modifier.fillParentMaxSize()) {
+                content()
+            }
+        }
+    }
 }
 
 @Preview

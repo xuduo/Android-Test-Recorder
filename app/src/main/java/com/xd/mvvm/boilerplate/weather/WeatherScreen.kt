@@ -18,7 +18,6 @@ package com.xd.mvvm.boilerplate.weather
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,14 +56,15 @@ fun WeatherScreen(
             AppBar(R.string.weather)
         },
     ) {
-        WeatherContent()
+        WeatherContent(modifier = Modifier
+            .padding(it))
     }
 }
 
 @Composable
 private fun WeatherContent(
-    modifier: Modifier = Modifier,
     viewModel: WeatherViewModel = hiltViewModel(),
+    modifier: Modifier,
 ) {
     val data by viewModel.weather.observeAsState()
     L.d("WeatherContent compose")
@@ -72,18 +72,12 @@ private fun WeatherContent(
         data,
         onRefresh = { viewModel.fetchWeather() }
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
-        ) {
-            LazyColumn {
-                itemsIndexed(it.hourly.temperature) { index, item ->
-                    Item(
-                        temperature = it.hourly.temperature[index],
-                        dateTime = it.hourly.time[index]
-                    )
-                }
+        LazyColumn {
+            itemsIndexed(it.hourly.temperature) { index, _ ->
+                Item(
+                    temperature = it.hourly.temperature[index],
+                    dateTime = it.hourly.time[index]
+                )
             }
         }
     }
