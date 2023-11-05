@@ -1,6 +1,5 @@
 @file:OptIn(
-    ExperimentalMaterialApi::class, ExperimentalMaterialApi::class,
-    ExperimentalMaterialApi::class, ExperimentalMaterialApi::class
+    ExperimentalMaterialApi::class
 )
 
 package com.xd.mvvm.boilerplate.util
@@ -38,7 +37,7 @@ import com.xd.mvvm.boilerplate.logger.L
 fun <T> DataLoadingContent(
     data: D<T>?,
     emptyContent: @Composable () -> Unit = { EmptyContent() },
-    errorContent: @Composable () -> Unit = { EmptyContent() },
+    errorContent: (@Composable (message:String) -> Unit)? = null,
     onRefresh: () -> Unit,
     content: @Composable (d: T) -> Unit
 ) {
@@ -56,7 +55,11 @@ fun <T> DataLoadingContent(
             is Err -> {
                 L.d("DataLoadingContent D.Error")
                 wrapInLazyColumn {
-                    errorContent()
+                    if(errorContent != null){
+                        errorContent(data.errorMessage)
+                    } else {
+                        ErrorContent(message = data.errorMessage)
+                    }
                 }
             }
 

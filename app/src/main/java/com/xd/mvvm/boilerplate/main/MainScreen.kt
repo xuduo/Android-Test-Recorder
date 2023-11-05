@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.xd.mvvm.boilerplate.tasks
+package com.xd.mvvm.boilerplate.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,12 +32,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.boilerplate.MainDestinations
 import com.xd.mvvm.boilerplate.R
-import com.xd.mvvm.boilerplate.TodoNavigationActions
+import com.xd.mvvm.boilerplate.NavigationActions
 import com.xd.mvvm.boilerplate.config.ConfigViewModel
 import com.xd.mvvm.boilerplate.widget.AppBar
 
@@ -45,7 +46,7 @@ import com.xd.mvvm.boilerplate.widget.AppBar
 fun MainScreen(
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    navActions: TodoNavigationActions
+    navActions: NavigationActions
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -57,10 +58,10 @@ fun MainScreen(
     {
         Column {
             Modifier.padding(it)
-            MainScreenItem(text = "Weather: HttpRequest Example") {
+            MainScreenItem(text = stringResource(R.string.enter_weather_label)) {
                 navActions.navigate(MainDestinations.WEATHER)
             }
-            MainScreenItem(text = "Weather: Cached HttpRequest Example") {
+            MainScreenItem(text = stringResource(id = R.string.enter_weather_cache_label)) {
                 navActions.navigate(MainDestinations.CACHED_WEATHER)
             }
             SimulateErrorConfig()

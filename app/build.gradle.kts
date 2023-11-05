@@ -19,7 +19,6 @@ import com.android.build.api.dsl.Packaging
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -34,7 +33,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.xd.mvvm.boilerplate.CustomTestRunner"
+        testInstrumentationRunner = "com.xd.mvvm.boilerplate.test.runner.CustomTestRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -91,7 +90,7 @@ android {
         jvmTarget = "1.8"
     }
 
-    //    kotlin {
+//    kotlin {
 //        jvmToolchain(18)
 //    }
     fun Packaging.() {
@@ -113,6 +112,18 @@ android {
             jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
     }
+//    tasks.withType<org.jetbrains.kotlin.ksp.gradle.KspKotlinGradleSubplugin>().configureEach {
+//        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
+//    tasks.withType<kspDebugKotlin>().configureEach {
+//        // Java 11 is required to run tests
+////        javaLauncher.set(
+////            javaToolchains.launcherFor {
+////                languageVersion.set(JavaLanguageVersion.of(18))
+////            }
+////        )
+//        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
 }
 
 /*
@@ -135,7 +146,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android.core)
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Jetpack Compose
     val composeBom = platform(libs.androidx.compose.bom)
@@ -175,7 +186,7 @@ dependencies {
 
     // JVM tests - Hilt
     testImplementation(libs.hilt.android.testing)
-    kaptTest(libs.hilt.compiler)
+    kspTest(libs.hilt.compiler)
 
     // Dependencies for Android unit tests
     androidTestImplementation(composeBom)
@@ -187,7 +198,7 @@ dependencies {
     testImplementation(libs.androidx.test.core.ktx)
     testImplementation(libs.androidx.test.ext)
     testImplementation(libs.androidx.test.rules)
-    testImplementation(project(":shared-test"))
+//    testImplementation(project(":shared-test"))
 
     // AndroidX Test - Instrumented testing
     androidTestImplementation(libs.androidx.test.core.ktx)
@@ -201,9 +212,8 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.intents)
     androidTestImplementation(libs.androidx.test.espresso.idling.resources)
     androidTestImplementation(libs.androidx.test.espresso.idling.concurrent)
-    androidTestImplementation(project(":shared-test"))
 
     // AndroidX Test - Hilt testing
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.compiler)
 }

@@ -24,16 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.xd.mvvm.boilerplate.TodoDestinationsArgs.TASK_ID_ARG
-import com.xd.mvvm.boilerplate.TodoDestinationsArgs.TITLE_ARG
-import com.xd.mvvm.boilerplate.TodoDestinationsArgs.USER_MESSAGE_ARG
-import com.xd.mvvm.boilerplate.addedittask.AddEditTaskScreen
-import com.xd.mvvm.boilerplate.tasks.MainScreen
+import com.xd.mvvm.boilerplate.main.MainScreen
 import com.xd.mvvm.boilerplate.weather.CachedWeatherScreen
 import com.xd.mvvm.boilerplate.weather.WeatherScreen
 
@@ -45,9 +39,9 @@ val LocalNavController = compositionLocalOf<NavController> {
 fun MainNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = MainDestinations.TASKS_ROUTE,
-    navActions: TodoNavigationActions = remember(navController) {
-        TodoNavigationActions(navController)
+    startDestination: String = MainDestinations.MAIN,
+    navActions: NavigationActions = remember(navController) {
+        NavigationActions(navController)
     }
 ) {
     CompositionLocalProvider(LocalNavController provides navController) {
@@ -57,13 +51,10 @@ fun MainNavGraph(
             modifier = modifier
         ) {
             composable(
-                MainDestinations.TASKS_ROUTE,
-                arguments = listOf(
-                    navArgument(USER_MESSAGE_ARG) { type = NavType.IntType; defaultValue = 0 }
-                )
-            ) { entry ->
+                MainDestinations.MAIN
+            ) {
                 MainScreen(
-                    navActions = navActions,
+                    navActions = navActions
                 )
             }
             composable(MainDestinations.WEATHER) {
@@ -71,24 +62,6 @@ fun MainNavGraph(
             }
             composable(MainDestinations.CACHED_WEATHER) {
                 CachedWeatherScreen()
-            }
-            composable(
-                MainDestinations.ADD_EDIT_TASK_ROUTE,
-                arguments = listOf(
-                    navArgument(TITLE_ARG) { type = NavType.IntType },
-                    navArgument(TASK_ID_ARG) { type = NavType.StringType; nullable = true },
-                )
-            ) { entry ->
-                val taskId = entry.arguments?.getString(TASK_ID_ARG)
-                AddEditTaskScreen(
-                    topBarTitle = entry.arguments?.getInt(TITLE_ARG)!!,
-                    onTaskUpdate = {
-                        navActions.navigateToTasks(
-                            if (taskId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK
-                        )
-                    },
-                    onBack = { navController.popBackStack() }
-                )
             }
         }
     }

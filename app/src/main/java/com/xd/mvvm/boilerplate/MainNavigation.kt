@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package com.xd.mvvm.boilerplate.data.source.network
+package com.xd.mvvm.boilerplate
+
+import androidx.navigation.NavHostController
 
 /**
- * Internal model used to represent a task obtained from the network. This is used inside the data
- * layer only.
- *
- * See ModelMappingExt.kt for mapping functions used to convert this model to other
- * models.
+ * Destinations used in the [MainActivity]
  */
-data class NetworkTask(
-    val id: String,
-    val title: String,
-    val shortDescription: String,
-    val priority: Int? = null,
-    val status: TaskStatus = TaskStatus.ACTIVE
-)
+object MainDestinations {
+    const val MAIN = "main"
+    const val WEATHER = "weather"
+    const val CACHED_WEATHER = "cached_weather"
+}
 
-enum class TaskStatus {
-    ACTIVE,
-    COMPLETE
+/**
+ * Models the navigation actions in the app.
+ */
+class NavigationActions(private val navController: NavHostController) {
+
+    fun navigate(dest: String) {
+        navController.navigate(dest)
+    }
+
 }

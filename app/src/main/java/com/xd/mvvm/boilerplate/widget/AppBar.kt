@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.xd.mvvm.boilerplate.LocalNavController
+import com.xd.mvvm.boilerplate.R
 
 @Composable
 fun AppBar(titleId: Int, showBackButton: Boolean = true) {
@@ -20,7 +21,8 @@ fun AppBar(titleId: Int, showBackButton: Boolean = true) {
                 IconButton(onClick = {
                     navController.navigateUp()
                 }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(
+                        R.string.navigate_up))
                 }
             }
         } else null

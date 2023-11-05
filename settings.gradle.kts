@@ -30,5 +30,4 @@ dependencyResolutionManagement {
 }
 
 include(":app")
-include(":shared-test")
 include(":model")
