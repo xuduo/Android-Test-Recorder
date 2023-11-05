@@ -19,6 +19,7 @@
     <string name="add_task">New Task</string>
     <string name="edit_task">Edit Task</string>
     <string name="weather">Weather</string>
+    <string name="cached_weather">Cached Weather</string>
     <string name="task_details">Task Details</string>
     <string name="task_marked_complete">Task marked complete</string>
     <string name="task_marked_active">Task marked active</string>

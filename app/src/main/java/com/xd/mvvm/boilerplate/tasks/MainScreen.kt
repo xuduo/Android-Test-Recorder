@@ -57,11 +57,11 @@ fun MainScreen(
     {
         Column {
             Modifier.padding(it)
-            MainScreenItem(text = "Weather") {
+            MainScreenItem(text = "Weather: HttpRequest Example") {
                 navActions.navigate(MainDestinations.WEATHER)
             }
-            MainScreenItem(text = "first") {
-
+            MainScreenItem(text = "Weather: Cached HttpRequest Example") {
+                navActions.navigate(MainDestinations.CACHED_WEATHER)
             }
             SimulateErrorConfig()
             SimulateHttpLatencyConfig()

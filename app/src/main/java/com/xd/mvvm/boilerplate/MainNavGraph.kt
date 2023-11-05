@@ -34,6 +34,7 @@ import com.xd.mvvm.boilerplate.TodoDestinationsArgs.TITLE_ARG
 import com.xd.mvvm.boilerplate.TodoDestinationsArgs.USER_MESSAGE_ARG
 import com.xd.mvvm.boilerplate.addedittask.AddEditTaskScreen
 import com.xd.mvvm.boilerplate.tasks.MainScreen
+import com.xd.mvvm.boilerplate.weather.CachedWeatherScreen
 import com.xd.mvvm.boilerplate.weather.WeatherScreen
 
 val LocalNavController = compositionLocalOf<NavController> {
@@ -67,6 +68,9 @@ fun MainNavGraph(
             }
             composable(MainDestinations.WEATHER) {
                 WeatherScreen()
+            }
+            composable(MainDestinations.CACHED_WEATHER) {
+                CachedWeatherScreen()
             }
             composable(
                 MainDestinations.ADD_EDIT_TASK_ROUTE,

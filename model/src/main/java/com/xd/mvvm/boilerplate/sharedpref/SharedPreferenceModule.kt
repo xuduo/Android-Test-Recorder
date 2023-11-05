@@ -1,6 +1,7 @@
 package com.xd.mvvm.boilerplate.sharedpref
 
 import android.content.Context
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,10 +17,21 @@ object SharedPreferencesModule {
     @Provides
     @Singleton
     @Named("config")
-    fun provideSharedPreferencesHelper(
-        @ApplicationContext context: Context
+    fun provideSharedPreferencesHelperConfig(
+        @ApplicationContext context: Context,
+        moshi: Moshi
     ): SharedPreferencesHelper {
-        return SharedPreferencesHelper(context, "config")
+        return SharedPreferencesHelper(context, "config", moshi)
+    }
+
+    @Provides
+    @Singleton
+    @Named("cache")
+    fun provideSharedPreferencesHelperCache(
+        @ApplicationContext context: Context,
+        moshi: Moshi
+    ): SharedPreferencesHelper {
+        return SharedPreferencesHelper(context, "config", moshi)
     }
 
     @Provides

@@ -2,10 +2,16 @@ package com.xd.mvvm.boilerplate.sharedpref
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.squareup.moshi.Moshi
+import com.xd.mvvm.boilerplate.logger.Logger
 import javax.inject.Inject
 
-class SharedPreferencesHelper @Inject constructor(private val context: Context, name: String) {
-
+class SharedPreferencesHelper @Inject constructor(
+    private val context: Context,
+    name: String,
+    private val moshi: Moshi
+) {
+    private val logger = Logger("SharedPreferencesHelper-$name")
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
@@ -23,6 +29,33 @@ class SharedPreferencesHelper @Inject constructor(private val context: Context, 
 
     fun getString(key: String, defaultValue: String? = null): String? {
         return sharedPreferences.getString(key, defaultValue)
+    }
+
+    fun <T> putObject(key: String, value: T?, clazz: Class<T>) {
+        if (value == null) {
+            return
+        }
+        val adapter = moshi.adapter(clazz)
+        try {
+            val jsonString = adapter.toJson(value)
+            sharedPreferences.edit().putString(key, jsonString).apply()
+        } catch (e: Exception) {
+            logger.e("putObject error occurred: ${e.message}")
+        }
+    }
+
+    fun <T> getObject(key: String, clazz: Class<T>, defaultValue: T? = null): T? {
+
+        val jsonString = sharedPreferences.getString(key, null)
+        try {
+            val adapter = moshi.adapter(clazz)
+            if (jsonString != null) {
+                return adapter.fromJson(jsonString)
+            }
+        } catch (e: Exception) {
+            logger.e("getObject error occurred: ${e.message}")
+        }
+        return null
     }
 
     // Int
