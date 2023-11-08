@@ -73,7 +73,8 @@ private fun WeatherContent(
         onRefresh = { viewModel.fetchWeather() }
     ) {
         LazyColumn {
-            itemsIndexed(it.hourly.temperature) { index, _ ->
+            L.d("WeatherContent LazyColumn ${it.hourly.temperature.size}")
+            items(it.hourly.temperature.size){index->
                 Item(
                     temperature = it.hourly.temperature[index],
                     dateTime = it.hourly.time[index]

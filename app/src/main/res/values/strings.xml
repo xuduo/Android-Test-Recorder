@@ -73,5 +73,7 @@
     <string name="navigate_up">Back</string>
     <string name="enter_weather_label">Weather: HttpRequest Example</string>
     <string name="enter_weather_cache_label">Weather: Cached HttpRequest Example</string>
+    <string name="simulate_http_error">Simulate HTTP Error:</string>
+    <string name="error">Error</string>
 
 </resources>

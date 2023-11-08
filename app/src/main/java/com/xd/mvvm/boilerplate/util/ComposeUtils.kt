@@ -22,6 +22,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +38,7 @@ import com.xd.mvvm.boilerplate.logger.L
 fun <T> DataLoadingContent(
     data: D<T>?,
     emptyContent: @Composable () -> Unit = { EmptyContent() },
-    errorContent: (@Composable (message:String) -> Unit)? = null,
+    errorContent: (@Composable (message: String) -> Unit)? = null,
     onRefresh: () -> Unit,
     content: @Composable (d: T) -> Unit
 ) {
@@ -55,7 +56,7 @@ fun <T> DataLoadingContent(
             is Err -> {
                 L.d("DataLoadingContent D.Error")
                 wrapInLazyColumn {
-                    if(errorContent != null){
+                    if (errorContent != null) {
                         errorContent(data.errorMessage)
                     } else {
                         ErrorContent(message = data.errorMessage)
@@ -70,7 +71,7 @@ fun <T> DataLoadingContent(
                     content(it)
                 } ?: run {
                     wrapInLazyColumn {
-                        emptyContent()
+                        LoadingContent()
                     }
                 }
             }
@@ -119,6 +120,27 @@ private fun EmptyContent(
 }
 
 @Composable
+private fun LoadingContent(
+    @DrawableRes noTasksIconRes: Int = R.drawable.loading,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = noTasksIconRes),
+            contentDescription = stringResource(R.string.loading),
+            modifier = Modifier.size(96.dp)
+        )
+        Text(stringResource(id = R.string.loading))
+    }
+}
+
+@Composable
 private fun ErrorContent(
     message: String,
     @DrawableRes noTasksIconRes: Int = R.drawable.request_error,
@@ -127,7 +149,8 @@ private fun ErrorContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .padding(32.dp)
+            .testTag(stringResource(id = R.string.error)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,15 +85,16 @@ fun SimulateErrorConfig(viewModel: ConfigViewModel = hiltViewModel()) {
         verticalAlignment = Alignment.CenterVertically // This will align the Text and Checkbox vertically in the center
     ) {
         Text(
-            text = "Simulate HTTP Error:",
+            text = stringResource(id = R.string.simulate_http_error),
             modifier = Modifier.weight(1f) // This will make the Text occupy all available space
         )
 
-        Checkbox(
+        Switch(
             checked = simulateError,
             onCheckedChange = {
                 viewModel.simulateNetworkError.toggle() // Toggle the value when checkbox is clicked
-            }
+            },
+            modifier = Modifier.testTag(stringResource(R.string.simulate_http_error))
         )
     }
 
