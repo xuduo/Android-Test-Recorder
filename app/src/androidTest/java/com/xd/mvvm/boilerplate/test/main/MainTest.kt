@@ -39,6 +39,7 @@ import com.xd.mvvm.boilerplate.test.utils.BaseTest
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,7 +55,6 @@ class MainTest : BaseTest() {
 
     @Test
     fun testWeather1Navigation(){
-        setMainContent()
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_label)).performClick()
 
@@ -66,7 +66,6 @@ class MainTest : BaseTest() {
 
     @Test
     fun testWeather2Navigation(){
-        setMainContent()
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_cache_label)).performClick()
 

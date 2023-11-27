@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
  * Destinations used in the [MainActivity]
  */
 object MainDestinations {
+    const val RECORD = "RECORD"
     const val MAIN = "main"
     const val WEATHER = "weather"
     const val CACHED_WEATHER = "cached_weather"

@@ -48,9 +48,6 @@ import org.junit.runner.RunWith
 /**
  * Large End-to-End test for the tasks module.
  */
-@RunWith(AndroidJUnit4::class)
-@LargeTest
-@HiltAndroidTest
 open class BaseTest {
 
     @get:Rule(order = 0)
@@ -68,7 +65,6 @@ open class BaseTest {
     fun init() {
         hiltRule.inject()
     }
-
 
     protected fun setMainContent() {
         composeTestRule.setContent {

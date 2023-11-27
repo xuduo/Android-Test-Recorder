@@ -68,6 +68,9 @@ fun MainScreen(
             }
             SimulateErrorConfig()
             SimulateHttpLatencyConfig()
+            MainScreenItem(text = stringResource(R.string.record_screen)) {
+                navActions.navigate(MainDestinations.RECORD)
+            }
         }
     }
 }

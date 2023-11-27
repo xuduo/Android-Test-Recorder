@@ -72,5 +72,4 @@ class WeatherTest : BaseTest() {
         composeTestRule.waitUntilAtLeastOneExists(hasTestTag(getStringR(R.string.error)),10000)
     }
 
-
 }

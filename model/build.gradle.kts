@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.moshi)
     implementation(libs.moshikotlin)
+    implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

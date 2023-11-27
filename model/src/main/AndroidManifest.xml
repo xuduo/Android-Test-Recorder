@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+
+    <application
+        android:allowBackup="false">
+        <service android:name="com.xd.mvvm.boilerplate.recorder.RecorderService"
+            android:foregroundServiceType="mediaProjection" />
+    </application>
 
 </manifest>
