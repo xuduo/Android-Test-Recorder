@@ -5,7 +5,21 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+//    alias(libs.plugins.objectbox)
+    id("io.objectbox")
 }
+//buildscript {
+//    ext.objectboxVersion = "3.7.1"
+//    repositories {
+//        mavenCentral()
+//        // Note: 2.9.0 and older are available on jcenter()
+//    }
+//    dependencies {
+//        // Android Gradle Plugin 3.4.0 or later supported.
+//        classpath("com.android.tools.build:gradle:8.0.0")
+//        classpath("io.objectbox:objectbox-gradle-plugin:$objectboxVersion")
+//    }
+//}
 
 android {
     namespace = "com.xd.mvvm.boilerplate.model"

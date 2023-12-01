@@ -76,5 +76,7 @@
     <string name="simulate_http_error">Simulate HTTP Error:</string>
     <string name="error">Error</string>
     <string name="record_screen">Record Screen</string>
+    <string name="accessibility">Accessibility</string>
+    <string name="overlay">Overlay</string>
 
 </resources>

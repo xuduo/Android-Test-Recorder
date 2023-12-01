@@ -64,7 +64,6 @@ class RecorderViewModel @Inject constructor(
         RecorderService.startMediaIntent = data
         RecorderService.resultCode = resultCode
         ContextCompat.startForegroundService(context, serviceIntent)
-
     }
 
 

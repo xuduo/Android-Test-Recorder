@@ -27,13 +27,13 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
+        testInstrumentationRunner = "com.xd.mvvm.boilerplate.test.runner.RecordingTestRunner"
         applicationId = "com.xd.mvvm.boilerplate"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.xd.mvvm.boilerplate.test.runner.CustomTestRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {

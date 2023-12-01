@@ -16,6 +16,15 @@
 
 package com.xd.mvvm.boilerplate.main
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,24 +40,32 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.boilerplate.MainDestinations
 import com.xd.mvvm.boilerplate.R
 import com.xd.mvvm.boilerplate.NavigationActions
+import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
+import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityViewModel
 import com.xd.mvvm.boilerplate.config.ConfigViewModel
+import com.xd.mvvm.boilerplate.overlay.OverlayService
 import com.xd.mvvm.boilerplate.widget.AppBar
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    navActions: NavigationActions
+    navActions: NavigationActions,
+    touchAccessibilityViewModel: TouchAccessibilityViewModel = hiltViewModel()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -58,6 +75,7 @@ fun MainScreen(
         modifier = modifier.fillMaxSize()
     )
     {
+        val context = LocalContext.current
         Column {
             Modifier.padding(it)
             MainScreenItem(text = stringResource(R.string.enter_weather_label)) {
@@ -70,6 +88,40 @@ fun MainScreen(
             SimulateHttpLatencyConfig()
             MainScreenItem(text = stringResource(R.string.record_screen)) {
                 navActions.navigate(MainDestinations.RECORD)
+            }
+            MainScreenItem(text = stringResource(R.string.accessibility)) {
+                if (touchAccessibilityViewModel.isAccessibilityServiceEnabled()) {
+                    Toast
+                        .makeText(context, "isAccessibilityServiceEnabled", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    context.startActivity(intent)
+                }
+            }
+            val startForResult = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result: ActivityResult ->
+                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                    context.startService(Intent(context, OverlayService::class.java))
+                } else {
+                    // Permission denied
+                }
+            }
+            MainScreenItem(text = stringResource(R.string.overlay)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+                    // Show an alert dialog or notification asking the user to enable the permission in settings
+                    val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}"))
+                    startForResult.launch(intent)
+                } else {
+                    context.startService(Intent(context, OverlayService::class.java))
+                    Toast
+                        .makeText(context, "overlay", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+            MainScreenItem(text = "Test Dispatch") {
+                touchAccessibilityViewModel.testClick()
             }
         }
     }
@@ -138,6 +190,7 @@ private fun MainScreenItem(
 ) {
     Row(
         modifier = Modifier
+            .semantics { contentDescription = text }
             .fillMaxWidth()
             .clickable(onClick = onClick) // use the passed lambda here
             .padding(16.dp)
