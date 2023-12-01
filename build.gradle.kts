@@ -21,10 +21,3 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
 }
-
-buildscript {
-    dependencies {
-        // Android Gradle Plugin 3.4.0 or later supported.
-        classpath("io.objectbox:objectbox-gradle-plugin:3.7.1")
-    }
-}

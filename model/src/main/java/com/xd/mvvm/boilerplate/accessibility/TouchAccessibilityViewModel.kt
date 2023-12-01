@@ -38,27 +38,6 @@ class TouchAccessibilityViewModel @Inject constructor(
         logger.d("TouchAccessibilityViewModel.init")
     }
 
-    fun isAccessibilityServiceEnabled(): Boolean {
-        val expectedId = context.packageName + "/" + TouchAccessibilityService::class.java.name
-        val enabledServicesSetting = Settings.Secure.getString(
-            context.contentResolver,
-            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-        ) ?: return false
-
-        val enabledServices = TextUtils.SimpleStringSplitter(':').apply {
-            setString(enabledServicesSetting)
-        }
-
-        while (enabledServices.hasNext()) {
-            val enabledService = enabledServices.next()
-            if (expectedId == enabledService) {
-                return true
-            }
-        }
-
-        return false
-    }
-
     fun testClick(){
         TouchAccessibilityService.service?.testDispatch()
     }

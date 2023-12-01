@@ -1,5 +1,6 @@
 package com.xd.mvvm.boilerplate.recorder
 
+import android.accessibilityservice.AccessibilityService
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,8 +16,10 @@ import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.IBinder
+import android.view.MotionEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.logger.Logger
 import com.xd.mvvm.boilerplate.model.R
 import kotlinx.coroutines.CoroutineScope
@@ -29,11 +32,23 @@ import java.time.format.DateTimeFormatter
 
 class RecorderService : Service() {
 
+    companion object {
+        var service: RecorderService? = null
+        var startMediaIntent: Intent? = null
+        var resultCode = 0
+        const val ID_MEDIA_PROJECTION_SERVICE = 101
+
+        fun isRecording():Boolean {
+            return service?.recording == true
+        }
+    }
+
     private val logger = Logger("RecorderService")
-    private var display:VirtualDisplay? = null
-    private var surfaceTexture:SurfaceTexture? = null
-    private var mediaProjection:MediaProjection? = null
-    private var imageReader:ImageReader? = null
+    private var display: VirtualDisplay? = null
+    private var surfaceTexture: SurfaceTexture? = null
+    private var mediaProjection: MediaProjection? = null
+    private var imageReader: ImageReader? = null
+    private var recording = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         // Start the service as a foreground service
@@ -42,10 +57,11 @@ class RecorderService : Service() {
         startForeground(ID_MEDIA_PROJECTION_SERVICE, notification)
 
         // Implement your media projection logic here
-        CoroutineScope(Dispatchers.Main).launch  {
+        CoroutineScope(Dispatchers.Main).launch {
             delay(1000L) // 1秒間遅延
             startRecording()
-       }
+        }
+        service = this
         return START_NOT_STICKY
     }
 
@@ -66,7 +82,7 @@ class RecorderService : Service() {
 
         logger.d("start recording $resultCode $startMediaIntent")
 
-         mediaProjection =
+        mediaProjection =
             mediaProjectionManager.getMediaProjection(resultCode, startMediaIntent!!)
 
         mediaProjection?.registerCallback(object : MediaProjection.Callback() {
@@ -97,7 +113,12 @@ class RecorderService : Service() {
                 image.close()
             }
         }, null)
+        recording = true
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        service = null
     }
 
     private fun convertNanosecondsToReadable(timestamp: Long): String {
@@ -135,11 +156,5 @@ class RecorderService : Service() {
             .build()
     }
 
-    // Other necessary service methods like onBind()
 
-    companion object {
-        var startMediaIntent: Intent? = null
-        var resultCode = 0
-        const val ID_MEDIA_PROJECTION_SERVICE = 101
-    }
 }

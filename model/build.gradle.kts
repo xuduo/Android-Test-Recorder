@@ -5,21 +5,7 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-//    alias(libs.plugins.objectbox)
-    id("io.objectbox")
 }
-//buildscript {
-//    ext.objectboxVersion = "3.7.1"
-//    repositories {
-//        mavenCentral()
-//        // Note: 2.9.0 and older are available on jcenter()
-//    }
-//    dependencies {
-//        // Android Gradle Plugin 3.4.0 or later supported.
-//        classpath("com.android.tools.build:gradle:8.0.0")
-//        classpath("io.objectbox:objectbox-gradle-plugin:$objectboxVersion")
-//    }
-//}
 
 android {
     namespace = "com.xd.mvvm.boilerplate.model"
@@ -27,7 +13,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -53,6 +38,11 @@ android {
 
 dependencies {
 
+    // Architecture Components
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -63,9 +53,12 @@ dependencies {
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.room.testing)
 
     // Hilt
     implementation(libs.hilt.android.core)
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
+
+
 }

@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xd.mvvm.boilerplate.main.MainScreen
 import com.xd.mvvm.boilerplate.recorder.RecorderScreen
+import com.xd.mvvm.boilerplate.recording.ProcessListScreen
 import com.xd.mvvm.boilerplate.weather.CachedWeatherScreen
 import com.xd.mvvm.boilerplate.weather.WeatherScreen
 
@@ -66,6 +67,9 @@ fun MainNavGraph(
             }
             composable(MainDestinations.CACHED_WEATHER) {
                 CachedWeatherScreen()
+            }
+            composable(MainDestinations.PROCESS_LIST) {
+                ProcessListScreen()
             }
         }
     }

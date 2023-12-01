@@ -22,14 +22,16 @@ class TouchAccessibilityService : AccessibilityService() {
         fun dispatchGesture(
             motionEvents: MutableList<MotionEvent>,
             callback: GestureResultCallback
-        ) {
+        ) :Boolean {
             service?.let { service ->
                 val gesture = service.createGestureDescription(motionEvents)
                 motionEvents.clear()
                 gesture?.let { gesture ->
                     service.dispatchGesture(gesture, callback, null)
+                    return@dispatchGesture true
                 }
             }
+            return false
         }
     }
 
@@ -60,40 +62,20 @@ class TouchAccessibilityService : AccessibilityService() {
                 )
             }"
         )
-        if (event?.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_START) {
+        if (event.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_START) {
             // タッチイベントが開始した時の処理
             logger.d("TYPE_TOUCH_INTERACTION_START $event")
         }
 
-        if (event?.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_END) {
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val packageName = event.packageName.toString()
+            logger.i("TYPE_WINDOW_STATE_CHANGED $packageName")
+        }
+
+        if (event.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_END) {
             // タッチイベントが終了した時の処理
             logger.d("TYPE_TOUCH_INTERACTION_END $event")
         }
-    }
-
-//    override fun onGesture(gestureEvent: AccessibilityGestureEvent): Boolean {
-//        logger.d("onGesture $gestureEvent")
-//        dispatchGesture(createGestureDescriptionFromEvent(gestureEvent),null,null)
-//        return super.onGesture(gestureEvent)
-//    }
-
-    private fun createGestureDescriptionFromEvent(event: AccessibilityGestureEvent): GestureDescription {
-        // Example: Assuming the event is a swipe gesture and you have extracted the necessary points and timing
-        val builder = GestureDescription.Builder()
-
-//        event.motionEvents.forEach { motionEvent ->
-//            val path = Path().apply {
-//                moveTo(motionEvent.x, motionEvent.y)
-//                // Add more points to the path if needed
-//            }
-//
-//            val stroke = GestureDescription.StrokeDescription(
-//                path, motionEvent.downTime, motionEvent.eventTime - motionEvent.downTime
-//            )
-//            builder.addStroke(stroke)
-//        }
-
-        return builder.build()
     }
 
     fun testDispatch() {

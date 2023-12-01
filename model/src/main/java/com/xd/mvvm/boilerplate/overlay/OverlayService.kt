@@ -87,7 +87,10 @@ class OverlayService : Service() {
 // Set OnTouchListener
         overlayView.setOnTouchListener { _, event ->
             // Handle touch events here
-            logger.d("OnTouchListener $event")
+            logger.d("OnTouchListener $event ${isPassThrough()}")
+            if(isPassThrough()){
+                true
+            }
             motionEventList.add(copyMotionEvent(event))
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -99,8 +102,11 @@ class OverlayService : Service() {
                         changeToPassThrough()
                         CoroutineScope(Dispatchers.Main).launch {
                             // Perform UI operations here
-                            delay(1)
-                            TouchAccessibilityService.dispatchGesture(motionEventList, gestureCallback)
+                            delay(100)
+                            if(!TouchAccessibilityService.dispatchGesture(motionEventList, gestureCallback)){
+                                logger.w("dispatch failed")
+                                changeToCapture()
+                            }
                         }
                 }
             }
@@ -136,6 +142,10 @@ class OverlayService : Service() {
             originalEvent.y,
             originalEvent.metaState
         )
+    }
+
+    private fun isPassThrough(): Boolean {
+        return params.flags == flagsPassThrough
     }
 
     private fun changeToPassThrough(){

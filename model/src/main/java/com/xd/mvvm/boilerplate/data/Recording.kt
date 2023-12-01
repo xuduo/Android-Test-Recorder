@@ -1,13 +1,20 @@
 package com.xd.mvvm.boilerplate.data
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.ColumnInfo
 
-@Entity
+@Entity(tableName = "recordings")
 data class Recording(
-    @Id
+    @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
+
+    @ColumnInfo(name = "name")
     var name: String? = "Unnamed Recording",
+
+    @ColumnInfo(name = "create_time")
     var createTime: Long = System.currentTimeMillis(), // Set createTime when the object is created
+
+    @ColumnInfo(name = "update_time")
     var updateTime: Long = createTime
 )

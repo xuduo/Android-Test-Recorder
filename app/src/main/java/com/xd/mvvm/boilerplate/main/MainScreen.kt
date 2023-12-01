@@ -89,16 +89,6 @@ fun MainScreen(
             MainScreenItem(text = stringResource(R.string.record_screen)) {
                 navActions.navigate(MainDestinations.RECORD)
             }
-            MainScreenItem(text = stringResource(R.string.accessibility)) {
-                if (touchAccessibilityViewModel.isAccessibilityServiceEnabled()) {
-                    Toast
-                        .makeText(context, "isAccessibilityServiceEnabled", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    context.startActivity(intent)
-                }
-            }
             val startForResult = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result: ActivityResult ->
@@ -122,6 +112,9 @@ fun MainScreen(
             }
             MainScreenItem(text = "Test Dispatch") {
                 touchAccessibilityViewModel.testClick()
+            }
+            MainScreenItem(text = "Choose App and Record") {
+                navActions.navigate(MainDestinations.PROCESS_LIST)
             }
         }
     }
