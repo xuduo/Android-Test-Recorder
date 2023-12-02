@@ -1,6 +1,8 @@
 package com.xd.mvvm.boilerplate.data
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+//import androidx.lifecycle.Transformations
 
 sealed class D<T> {
     open val value: T? = null
@@ -15,9 +17,7 @@ sealed class D<T> {
 
         if (value != other.value) return false
         if (errorMessage != other.errorMessage) return false
-        if (loading != other.loading) return false
-
-        return true
+        return loading == other.loading
     }
 
     override fun hashCode(): Int {
@@ -61,3 +61,15 @@ fun <T> MutableLiveData<T>.postNoneEqual(data: T): Boolean {
     }
 }
 
+//fun <T> LiveData<T>.asD(): LiveData<D<T>> {
+//    return Transformations.map(this) { value ->
+//        // Assuming 'value' will not be null for Success. Adjust based on your use case.
+//        if (value != null) {
+//            Success(value)
+//        } else {
+//            // You can choose to return Loading or Error based on your use case
+//            // Here, I am assuming null means Loading. Adjust as necessary.
+//            Loading()
+//        }
+//    }
+//}

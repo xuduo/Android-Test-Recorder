@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshikotlin)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

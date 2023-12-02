@@ -43,7 +43,7 @@ import com.xd.mvvm.boilerplate.overlay.OverlayService
 import com.xd.mvvm.boilerplate.widget.AppBar
 
 @Composable
-fun ProcessListScreen(
+fun RecordingListScreen(
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {

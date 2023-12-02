@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.logger.Logger
 import com.xd.mvvm.boilerplate.model.R
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,6 +31,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+//@AndroidEntryPoint
 class RecorderService : Service() {
 
     companion object {

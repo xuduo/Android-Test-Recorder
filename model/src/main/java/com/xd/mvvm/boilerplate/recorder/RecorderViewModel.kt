@@ -16,20 +16,19 @@
 
 package com.xd.mvvm.boilerplate.recorder
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.SurfaceTexture
-import android.hardware.display.DisplayManager
-import android.media.MediaRecorder
-import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.view.Surface
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import com.xd.mvvm.boilerplate.coroutine.io
+import com.xd.mvvm.boilerplate.dao.RecordingDao
+import com.xd.mvvm.boilerplate.data.Recording
 import com.xd.mvvm.boilerplate.logger.Logger
+import com.xd.mvvm.boilerplate.recording.AppInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -37,7 +36,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecorderViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val recordingDao: RecordingDao
 ) : ViewModel() {
     private val logger = Logger("RecorderViewModel")
     private val surfaceTexture = SurfaceTexture(1)
@@ -50,7 +50,7 @@ class RecorderViewModel @Inject constructor(
         }
     }
 
-    fun startRecording(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) {
+    fun startCapture(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) {
         val mediaProjectionManager = ContextCompat.getSystemService(
             context, MediaProjectionManager::class.java
         ) as MediaProjectionManager
@@ -59,13 +59,27 @@ class RecorderViewModel @Inject constructor(
         launcher.launch(screenCaptureIntent)
     }
 
+    fun startRecording(appInfo: AppInfo) {
+        val recording = Recording().apply {
+            this.name = appInfo.appName
+            this.packageName = appInfo.packageName
+        }
+        io {
+            recordingDao.insertRecording(recording)
+        }
+    }
+
+    fun getAllRecordings() {
+        val recordings = recordingDao.getAllRecordings()
+
+    }
+
     fun handleScreenCaptureResult(resultCode: Int, data: Intent?) {
         val serviceIntent = Intent(context, RecorderService::class.java)
         RecorderService.startMediaIntent = data
         RecorderService.resultCode = resultCode
         ContextCompat.startForegroundService(context, serviceIntent)
     }
-
 
 }
 

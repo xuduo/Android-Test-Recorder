@@ -66,7 +66,7 @@ private fun RecorderScreenContent(
         }
     }
     Button(onClick = {
-        viewModel.startRecording(startForResult)
+        viewModel.startCapture(startForResult)
          }) {
         Text("Start Screen Recording")
     }

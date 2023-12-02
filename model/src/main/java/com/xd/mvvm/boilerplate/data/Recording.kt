@@ -12,6 +12,9 @@ data class Recording(
     @ColumnInfo(name = "name")
     var name: String? = "Unnamed Recording",
 
+    @ColumnInfo(name = "package_name")
+    var packageName: String? = "Unnamed PackageName",
+
     @ColumnInfo(name = "create_time")
     var createTime: Long = System.currentTimeMillis(), // Set createTime when the object is created
 
