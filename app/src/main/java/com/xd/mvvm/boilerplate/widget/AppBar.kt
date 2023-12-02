@@ -12,17 +12,20 @@ import com.xd.mvvm.boilerplate.LocalNavController
 import com.xd.mvvm.boilerplate.R
 
 @Composable
-fun AppBar(titleId: Int, showBackButton: Boolean = true) {
+fun AppBar(titleId: Int = 0, titleText: String = "", showBackButton: Boolean = true) {
     val navController = LocalNavController.current
     TopAppBar(
-        title = { Text(text = stringResource(titleId)) },
+        title = { Text(text = if (titleId != 0) stringResource(titleId) else titleText) },
         navigationIcon = if (showBackButton) {
             {
                 IconButton(onClick = {
                     navController.navigateUp()
                 }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(
-                        R.string.navigate_up))
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(
+                            R.string.navigate_up
+                        )
+                    )
                 }
             }
         } else null

@@ -79,5 +79,6 @@
     <string name="accessibility">Accessibility</string>
     <string name="overlay">Overlay</string>
     <string name="choose_app_to_record">Choose App to Record</string>
+    <string name="actions">Actions</string>
 
 </resources>

@@ -5,12 +5,8 @@ import android.accessibilityservice.GestureDescription
 import android.app.Service
 import android.content.Intent
 import android.gesture.GestureOverlayView
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.ImageFormat
 import android.graphics.PixelFormat
-import android.media.Image
 import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
@@ -22,19 +18,14 @@ import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.coroutine.io
 import com.xd.mvvm.boilerplate.dao.ActionDao
 import com.xd.mvvm.boilerplate.dao.ActionImageDao
-import com.xd.mvvm.boilerplate.data.Action
 import com.xd.mvvm.boilerplate.data.ActionImage
 import com.xd.mvvm.boilerplate.data.convertImageToByteArray
 import com.xd.mvvm.boilerplate.data.convertMotionEventsToAction
 import com.xd.mvvm.boilerplate.logger.Logger
 import com.xd.mvvm.boilerplate.recorder.RecorderService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -48,6 +39,7 @@ class OverlayService : Service() {
 
     @Inject
     lateinit var actionImageDao: ActionImageDao
+    @Inject
     lateinit var actionDao: ActionDao
 
     private lateinit var windowManager: WindowManager
@@ -96,7 +88,7 @@ class OverlayService : Service() {
         super.onCreate()
         service = this
         removeOverlay()
-        logger.d("onCreate")
+        logger.i("onCreate")
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         overlayView = GestureOverlayView(this)
         overlayView.layoutParams = LinearLayout.LayoutParams(
@@ -160,18 +152,20 @@ class OverlayService : Service() {
             logger.e("recordingId less than 0")
             return
         }
-        val action = convertMotionEventsToAction(motionEventList, recordingId)
+        val action = convertMotionEventsToAction(motionEventList, recordingId, overlayView.width, overlayView.height)
         motionEventList.clear()
         val gesture = action?.toGestureDescription()
-        val image = RecorderService.service?.latestImage
-        if (action == null || image == null || image.format != ImageFormat.YUV_420_888) {
-            logger.w("changeToCapture $action $gesture $image")
+        val image = RecorderService.getLatestImage()
+        if (action == null || image == null) {
+            logger.w("changeToCapture ${action?.type} $gesture ${image?.format}")
             changeToCapture()
         } else {
+            changeToPassThrough()
             io {
                 val actionId = actionDao.insertAction(action)
-                val actionImage = ActionImage(actionId = actionId, screenShot = convertImageToByteArray(image, TouchAccessibilityService.getStatusBarHeight()))
+                val actionImage = ActionImage(actionId = actionId, screenShot = convertImageToByteArray(image, action.screenHeight))
                 actionImageDao.insertActionImage(actionImage)
+                logger.i("insert action success ${action.id} ${action.screenWidth} ${action.screenHeight}")
                 withContext(Dispatchers.Main){
                     TouchAccessibilityService.dispatchGesture(
                         gesture,

@@ -29,6 +29,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xd.mvvm.boilerplate.main.MainScreen
 import com.xd.mvvm.boilerplate.recorder.RecorderScreen
+import com.xd.mvvm.boilerplate.recording.ActionImageScreen
+import com.xd.mvvm.boilerplate.recording.ActionListScreen
 import com.xd.mvvm.boilerplate.recording.ProcessListScreen
 import com.xd.mvvm.boilerplate.recording.RecordingListScreen
 import com.xd.mvvm.boilerplate.weather.CachedWeatherScreen
@@ -70,11 +72,15 @@ fun MainNavGraph(
             composable(MainDestinations.RECORDING_LIST) {
                 RecordingListScreen()
             }
+            composable("${MainDestinations.ACTION_LIST}/{recordingId}") {backStackEntry->
+                val recordingId = backStackEntry.arguments?.getString("recordingId")?.toLongOrNull() ?: 0L
+                ActionListScreen(recordingId)
+            }
+            composable("${MainDestinations.ACTION_IMAGE}/{recordingId}/{actionId}") {backStackEntry->
+                val recordingId = backStackEntry.arguments?.getString("recordingId")?.toLongOrNull() ?: 0L
+                val actionId = backStackEntry.arguments?.getString("actionId")?.toLongOrNull() ?: 0L
+                ActionImageScreen(recordingId,actionId)
+            }
         }
     }
 }
-
-// Keys for navigation
-const val ADD_EDIT_RESULT_OK = Activity.RESULT_FIRST_USER + 1
-const val DELETE_RESULT_OK = Activity.RESULT_FIRST_USER + 2
-const val EDIT_RESULT_OK = Activity.RESULT_FIRST_USER + 3

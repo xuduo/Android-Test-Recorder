@@ -17,7 +17,9 @@ import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.IBinder
+import android.util.DisplayMetrics
 import android.view.MotionEvent
+import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
@@ -43,6 +45,12 @@ class RecorderService : Service() {
 
         fun isRecording():Boolean {
             return service?.recording == true
+        }
+
+        fun getLatestImage(): Image? {
+            val latest = service?.latestImage
+            service?.latestImage = null
+            return latest
         }
     }
 
@@ -95,11 +103,13 @@ class RecorderService : Service() {
             }
         }, null)
 
-        val width = 720
-        val height = 1280
-        val dpi = 320
+        val metrics = getScreenMetrics()
 
-        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGB_888, 10)
+        val width = metrics.widthPixels // Screen width in pixels
+        val height = metrics.heightPixels // Screen height in pixels
+        val dpi = metrics.densityDpi // Screen density in DPI
+
+        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 10)
 
         display = mediaProjection?.createVirtualDisplay(
             "ScreenRecordService",
@@ -113,11 +123,18 @@ class RecorderService : Service() {
             val image = reader.acquireLatestImage()
             if (image != null) {
                 latestImage?.close()
-                logger.d("imageReader on frame ${convertNanosecondsToReadable(image.timestamp)}")
+                logger.d("imageReader on frame ${image.format}")
                 latestImage = image
             }
         }, null)
         recording = true
+    }
+
+    fun getScreenMetrics(): DisplayMetrics {
+        val displayMetrics = DisplayMetrics()
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
     }
 
     override fun onDestroy() {

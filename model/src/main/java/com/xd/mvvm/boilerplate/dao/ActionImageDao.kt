@@ -1,5 +1,6 @@
 package com.xd.mvvm.boilerplate.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -24,7 +25,7 @@ interface ActionImageDao {
 
     // Query to retrieve an ActionImage by its actionId
     @Query("SELECT * FROM action_images WHERE actionId = :actionId")
-    fun getActionImageByActionId(actionId: Long): ActionImage?
+    fun getActionImageByActionId(actionId: Long): LiveData<ActionImage>
 
     // Query to retrieve all ActionImages
     @Query("SELECT * FROM action_images")

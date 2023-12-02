@@ -9,6 +9,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.ToJson
 
 @Database(entities = [Recording::class, Action::class, ActionImage::class], version = 1)
 @TypeConverters(CordsConverter::class)
@@ -18,9 +21,25 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun actionImage(): ActionImageDao
 }
 
+class PairAdapter {
+    @ToJson
+    fun toJson(pair: Pair<Int, Int>): String {
+        return "${pair.first},${pair.second}"
+    }
+
+    @FromJson
+    fun fromJson(json: String): Pair<Int, Int> {
+        val parts = json.split(",")
+        if (parts.size != 2) throw JsonDataException("Invalid json for Pair")
+        return Pair(parts[0].toInt(), parts[1].toInt())
+    }
+}
+
 class CordsConverter {
 
-    private val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder()
+        .add(PairAdapter())
+        .build()
     private val pairType = Types.newParameterizedType(Pair::class.java, Int::class.javaObjectType, Int::class.javaObjectType)
     private val listType = Types.newParameterizedType(List::class.java, pairType)
     private val jsonAdapter = moshi.adapter<List<Pair<Int, Int>>>(listType)

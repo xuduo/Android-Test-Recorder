@@ -50,8 +50,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.xd.mvvm.boilerplate.LocalNavController
 import com.xd.mvvm.boilerplate.MainDestinations
 import com.xd.mvvm.boilerplate.R
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityViewModel
@@ -64,7 +66,6 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     touchAccessibilityViewModel: TouchAccessibilityViewModel = hiltViewModel(),
-    nav: NavHostController = rememberNavController()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -75,6 +76,7 @@ fun MainScreen(
     )
     {
         val context = LocalContext.current
+        val nav = LocalNavController.current
         Column {
             Modifier.padding(it)
             MainScreenItem(text = stringResource(R.string.enter_weather_label)) {

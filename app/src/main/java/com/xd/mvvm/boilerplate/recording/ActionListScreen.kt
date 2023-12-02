@@ -24,15 +24,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xd.mvvm.boilerplate.LocalNavController
 import com.xd.mvvm.boilerplate.R
 import com.xd.mvvm.boilerplate.data.Action
 import com.xd.mvvm.boilerplate.data.Recording
+import com.xd.mvvm.boilerplate.goToActionImage
+import com.xd.mvvm.boilerplate.goToActionList
 import com.xd.mvvm.boilerplate.logger.L
 import com.xd.mvvm.boilerplate.util.DataLoadingContent
 import com.xd.mvvm.boilerplate.widget.AppBar
 
 @Composable
-fun RecordingListScreen(
+fun ActionListScreen(
     recordingId: Long,
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -76,15 +79,16 @@ private fun ActionListScreenContent(
 
 @Composable
 private fun Item(
-    recording: Action
+    action: Action
 ) {
     val context = LocalContext.current
-
+    val nav = LocalNavController.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
+                nav.goToActionImage(action.recordingId, action.id)
             }
             .padding(
                 horizontal = dimensionResource(id = R.dimen.horizontal_margin),
@@ -92,11 +96,11 @@ private fun Item(
             )
     ) {
         Text(
-            text = recording.type ?: "",
+            text = action.type ?: "",
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = recording.duration.toString() ?: "",
+            text = action.duration.toString() ?: "",
             style = MaterialTheme.typography.h6
         )
     }

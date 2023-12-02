@@ -17,8 +17,10 @@ import androidx.lifecycle.ViewModel
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.coroutine.io
 import com.xd.mvvm.boilerplate.dao.ActionDao
+import com.xd.mvvm.boilerplate.dao.ActionImageDao
 import com.xd.mvvm.boilerplate.dao.RecordingDao
 import com.xd.mvvm.boilerplate.data.Action
+import com.xd.mvvm.boilerplate.data.ActionImage
 import com.xd.mvvm.boilerplate.data.D
 import com.xd.mvvm.boilerplate.data.Recording
 import com.xd.mvvm.boilerplate.data.asD
@@ -41,6 +43,7 @@ class RecordingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val recordingDao: RecordingDao,
     private val actionDao: ActionDao,
+    private val actionImageDao: ActionImageDao,
 ) : ViewModel() {
     private val logger = Logger("RecordingViewModel")
 
@@ -151,5 +154,9 @@ class RecordingViewModel @Inject constructor(
         RecorderService.startMediaIntent = data
         RecorderService.resultCode = resultCode
         ContextCompat.startForegroundService(context, serviceIntent)
+    }
+
+    fun getActionImage(actionId: Long): LiveData<ActionImage> {
+        return actionImageDao.getActionImageByActionId(actionId)
     }
 }

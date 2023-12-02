@@ -16,7 +16,9 @@
 
 package com.xd.mvvm.boilerplate
 
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.xd.mvvm.boilerplate.MainDestinations.ACTION_IMAGE
 import com.xd.mvvm.boilerplate.MainDestinations.ACTION_LIST
 
 /**
@@ -30,8 +32,13 @@ object MainDestinations {
     const val PROCESS_LIST = "process_list"
     const val RECORDING_LIST = "recording_list"
     const val ACTION_LIST = "action_list"
+    const val ACTION_IMAGE = "action_image"
 }
 
-fun NavHostController.goToActionList(recordingId: Long){
+fun NavController.goToActionList(recordingId: Long) {
     this.navigate("$ACTION_LIST/$recordingId")
+}
+
+fun NavController.goToActionImage(recordingId: Long, actionId: Long) {
+    this.navigate("$ACTION_IMAGE/$recordingId/$actionId")
 }

@@ -8,13 +8,17 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlin.math.round
 
-@Entity(tableName = "actions",
+@Entity(
+    tableName = "actions",
     foreignKeys = [
-        ForeignKey(entity = Recording::class,
+        ForeignKey(
+            entity = Recording::class,
             parentColumns = ["id"],
             childColumns = ["recordingId"],
-            onDelete = ForeignKey.CASCADE)
-    ])
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class Action(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
@@ -27,7 +31,19 @@ data class Action(
 
     val duration: Int,
 
+    val screenWidth: Int,
+
+    val screenHeight: Int
+
 ) {
+    fun getRatioXOnScreen(): Float {
+        return cords[0].first.toFloat() / screenWidth.toFloat()
+    }
+
+    fun getRatioYOnScreen(): Float {
+        return cords[0].second.toFloat() / screenHeight.toFloat()
+    }
+
     fun toGestureDescription(): GestureDescription? {
         val gestureBuilder = GestureDescription.Builder()
         val path = Path()
@@ -40,6 +56,7 @@ data class Action(
                     path.lineTo(x.toFloat(), y.toFloat())
                 }
             }
+
             "swipe" -> {
                 // For swipe, create a path from the first to the last coordinate
                 cords.firstOrNull()?.let { (startX, startY) ->
@@ -49,6 +66,7 @@ data class Action(
                     }
                 }
             }
+
             else -> return null
         }
 
@@ -58,7 +76,12 @@ data class Action(
     }
 }
 
-fun convertMotionEventsToAction(motionEvents: List<MotionEvent>, recordingId: Long): Action? {
+fun convertMotionEventsToAction(
+    motionEvents: List<MotionEvent>,
+    recordingId: Long,
+    width: Int,
+    height: Int
+): Action? {
     if (motionEvents.isEmpty()) return null
 
     val startEvent = motionEvents.first()
@@ -88,12 +111,33 @@ fun convertMotionEventsToAction(motionEvents: List<MotionEvent>, recordingId: Lo
 
     return when {
         totalDistanceX > 20 || totalDistanceY > 20 -> // Swipe
-            Action(recordingId = recordingId, type = "swipe", cords = cords, duration = duration)
+            Action(
+                recordingId = recordingId,
+                type = "swipe",
+                cords = cords,
+                duration = duration,
+                screenWidth = width,
+                screenHeight = height
+            )
 
         duration < 500 -> // Click
-            Action(recordingId = recordingId, type = "click", cords = listOf(Pair(round(startEvent.x).toInt(), round(startEvent.y).toInt())), duration = 10)
+            Action(
+                recordingId = recordingId,
+                type = "click",
+                cords = listOf(Pair(round(startEvent.x).toInt(), round(startEvent.y).toInt())),
+                duration = 10,
+                screenWidth = width,
+                screenHeight = height
+            )
 
         else -> // Long Click
-            Action(recordingId = recordingId, type = "long_click", cords = listOf(Pair(round(startEvent.x).toInt(), round(startEvent.y).toInt())), duration = duration)
+            Action(
+                recordingId = recordingId,
+                type = "long_click",
+                cords = listOf(Pair(round(startEvent.x).toInt(), round(startEvent.y).toInt())),
+                duration = duration,
+                screenWidth = width,
+                screenHeight = height
+            )
     }
 }
