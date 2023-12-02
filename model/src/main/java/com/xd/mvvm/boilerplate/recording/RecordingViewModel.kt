@@ -16,7 +16,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.coroutine.io
+import com.xd.mvvm.boilerplate.dao.ActionDao
 import com.xd.mvvm.boilerplate.dao.RecordingDao
+import com.xd.mvvm.boilerplate.data.Action
 import com.xd.mvvm.boilerplate.data.D
 import com.xd.mvvm.boilerplate.data.Recording
 import com.xd.mvvm.boilerplate.data.asD
@@ -37,7 +39,8 @@ data class AppInfo(
 @HiltViewModel
 class RecordingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val recordingDao: RecordingDao
+    private val recordingDao: RecordingDao,
+    private val actionDao: ActionDao,
 ) : ViewModel() {
     private val logger = Logger("RecordingViewModel")
 
@@ -137,6 +140,10 @@ class RecordingViewModel @Inject constructor(
 
     fun getAllRecordings(): LiveData<D<List<Recording>>> {
         return recordingDao.getAllRecordings().asD()
+    }
+
+    fun getActionsByRecordingId(recordingId:Long): LiveData<D<List<Action>>> {
+        return actionDao.getActionsByRecordingId(recordingId = recordingId).asD()
     }
 
     fun handleScreenCaptureResult(resultCode: Int, data: Intent?) {

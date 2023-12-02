@@ -28,7 +28,7 @@ interface ActionDao {
     @Query("SELECT * FROM actions order by id desc")
     fun getAllActions(): LiveData<List<Action>>
 
-    @Query("SELECT * FROM actions WHERE recordingId = :recordingId order by id desc")
+    @Query("SELECT * FROM actions WHERE recordingId = :recordingId order by id asc")
     fun getActionsByRecordingId(recordingId: Long): LiveData<List<Action>>
 
     // Query a single recording by ID

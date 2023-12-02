@@ -42,10 +42,7 @@ val LocalNavController = compositionLocalOf<NavController> {
 fun MainNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = MainDestinations.MAIN,
-    navActions: NavigationActions = remember(navController) {
-        NavigationActions(navController)
-    }
+    startDestination: String = MainDestinations.MAIN
 ) {
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(
@@ -56,9 +53,7 @@ fun MainNavGraph(
             composable(
                 MainDestinations.MAIN
             ) {
-                MainScreen(
-                    navActions = navActions
-                )
+                MainScreen()
             }
             composable(MainDestinations.WEATHER) {
                 WeatherScreen()

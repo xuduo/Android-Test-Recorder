@@ -17,6 +17,7 @@
 package com.xd.mvvm.boilerplate
 
 import androidx.navigation.NavHostController
+import com.xd.mvvm.boilerplate.MainDestinations.ACTION_LIST
 
 /**
  * Destinations used in the [MainActivity]
@@ -28,15 +29,9 @@ object MainDestinations {
     const val CACHED_WEATHER = "cached_weather"
     const val PROCESS_LIST = "process_list"
     const val RECORDING_LIST = "recording_list"
+    const val ACTION_LIST = "action_list"
 }
 
-/**
- * Models the navigation actions in the app.
- */
-class NavigationActions(private val navController: NavHostController) {
-
-    fun navigate(dest: String) {
-        navController.navigate(dest)
-    }
-
+fun NavHostController.goToActionList(recordingId: Long){
+    this.navigate("$ACTION_LIST/$recordingId")
 }

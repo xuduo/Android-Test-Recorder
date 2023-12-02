@@ -40,7 +40,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -51,10 +50,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.xd.mvvm.boilerplate.MainDestinations
 import com.xd.mvvm.boilerplate.R
-import com.xd.mvvm.boilerplate.NavigationActions
-import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityViewModel
 import com.xd.mvvm.boilerplate.config.ConfigViewModel
 import com.xd.mvvm.boilerplate.overlay.OverlayService
@@ -64,8 +63,8 @@ import com.xd.mvvm.boilerplate.widget.AppBar
 fun MainScreen(
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    navActions: NavigationActions,
-    touchAccessibilityViewModel: TouchAccessibilityViewModel = hiltViewModel()
+    touchAccessibilityViewModel: TouchAccessibilityViewModel = hiltViewModel(),
+    nav: NavHostController = rememberNavController()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -79,15 +78,15 @@ fun MainScreen(
         Column {
             Modifier.padding(it)
             MainScreenItem(text = stringResource(R.string.enter_weather_label)) {
-                navActions.navigate(MainDestinations.WEATHER)
+                nav.navigate(MainDestinations.WEATHER)
             }
             MainScreenItem(text = stringResource(id = R.string.enter_weather_cache_label)) {
-                navActions.navigate(MainDestinations.CACHED_WEATHER)
+                nav.navigate(MainDestinations.CACHED_WEATHER)
             }
             SimulateErrorConfig()
             SimulateHttpLatencyConfig()
             MainScreenItem(text = stringResource(R.string.record_screen)) {
-                navActions.navigate(MainDestinations.RECORD)
+                nav.navigate(MainDestinations.RECORD)
             }
             val startForResult = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
@@ -114,10 +113,10 @@ fun MainScreen(
                 touchAccessibilityViewModel.testClick()
             }
             MainScreenItem(text = "Choose App and Record") {
-                navActions.navigate(MainDestinations.PROCESS_LIST)
+                nav.navigate(MainDestinations.PROCESS_LIST)
             }
             MainScreenItem(text = "Recording List") {
-                navActions.navigate(MainDestinations.RECORDING_LIST)
+                nav.navigate(MainDestinations.RECORDING_LIST)
             }
         }
     }
