@@ -2,6 +2,8 @@ package com.xd.mvvm.boilerplate.data;
 
 import android.content.Context
 import androidx.room.Room
+import com.xd.mvvm.boilerplate.dao.ActionDao
+import com.xd.mvvm.boilerplate.dao.ActionImageDao
 import com.xd.mvvm.boilerplate.dao.RecordingDao
 import dagger.Module
 import dagger.Provides
@@ -21,12 +23,22 @@ object DatabaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
-            "my_database_name"
+            "app_db"
         ).build()
     }
 
     @Provides
-    fun provideYourDao(database: AppDatabase): RecordingDao {
+    fun provideRecording(database: AppDatabase): RecordingDao {
         return database.recording()
+    }
+
+    @Provides
+    fun provideAction(database: AppDatabase): ActionDao {
+        return database.action()
+    }
+
+    @Provides
+    fun provideActionImage(database: AppDatabase): ActionImageDao {
+        return database.actionImage()
     }
 }

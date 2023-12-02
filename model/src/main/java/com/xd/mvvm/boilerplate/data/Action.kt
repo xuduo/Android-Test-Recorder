@@ -1,10 +1,12 @@
 package com.xd.mvvm.boilerplate.data
 
-import androidx.room.ColumnInfo
+import android.accessibilityservice.GestureDescription
+import android.graphics.Path
+import android.view.MotionEvent
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
+import kotlin.math.round
 
 @Entity(tableName = "actions",
     foreignKeys = [
@@ -13,51 +15,85 @@ import androidx.room.TypeConverter
             childColumns = ["recordingId"],
             onDelete = ForeignKey.CASCADE)
     ])
-
 data class Action(
     @PrimaryKey(autoGenerate = true)
-    val actionId: Long = 0,
+    val id: Long = 0,
 
     val recordingId: Long,
 
     val type: String,
 
-    val cords: List<Int>, // This needs to be converted to a storable format
+    val cords: List<Pair<Int, Int>>, // This needs to be converted to a storable format
 
     val duration: Int,
 
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val binaryData: ByteArray
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    fun toGestureDescription(): GestureDescription? {
+        val gestureBuilder = GestureDescription.Builder()
+        val path = Path()
 
-        other as Action
+        when (type) {
+            "click", "long_click" -> {
+                // For both click and long click, use the first coordinate
+                cords.firstOrNull()?.let { (x, y) ->
+                    path.moveTo(x.toFloat(), y.toFloat())
+                    path.lineTo(x.toFloat(), y.toFloat())
+                }
+            }
+            "swipe" -> {
+                // For swipe, create a path from the first to the last coordinate
+                cords.firstOrNull()?.let { (startX, startY) ->
+                    path.moveTo(startX.toFloat(), startY.toFloat())
+                    cords.lastOrNull()?.let { (endX, endY) ->
+                        path.lineTo(endX.toFloat(), endY.toFloat())
+                    }
+                }
+            }
+            else -> return null
+        }
 
-        if (actionId != other.actionId) return false
-        if (recordingId != other.recordingId) return false
-        if (type != other.type) return false
-        if (cords != other.cords) return false
-        if (duration != other.duration) return false
-        return binaryData.contentEquals(other.binaryData)
-    }
-
-    override fun hashCode(): Int {
-        var result = actionId.hashCode()
-        result = 31 * result + recordingId.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + cords.hashCode()
-        result = 31 * result + duration
-        result = 31 * result + binaryData.contentHashCode()
-        return result
+        val gestureStroke = GestureDescription.StrokeDescription(path, 0, duration.toLong())
+        gestureBuilder.addStroke(gestureStroke)
+        return gestureBuilder.build()
     }
 }
 
-//class Converters {
-//    @TypeConverter
-//    fun fromIntList(value: List<Int>): String = Gson().toJson(value)
-//
-//    @TypeConverter
-//    fun toIntList(value: String): List<Int> = Gson().fromJson(value, object : TypeToken<List<Int>>() {}.type)
-//}
+fun convertMotionEventsToAction(motionEvents: List<MotionEvent>, recordingId: Long): Action? {
+    if (motionEvents.isEmpty()) return null
+
+    val startEvent = motionEvents.first()
+    val endEvent = motionEvents.last()
+
+    // Check if the start is a down event and the end is an up event
+    if (startEvent.action != MotionEvent.ACTION_DOWN || endEvent.action != MotionEvent.ACTION_UP) {
+        return null
+    }
+
+    val duration = (endEvent.eventTime - startEvent.downTime).toInt()
+
+    // Calculate total movement and accumulate all coordinates
+    var totalDistanceX = 0f
+    var totalDistanceY = 0f
+    val cords = mutableListOf<Pair<Int, Int>>()
+
+    for (i in 1 until motionEvents.size) {
+        val prevEvent = motionEvents[i - 1]
+        val currEvent = motionEvents[i]
+
+        totalDistanceX += Math.abs(currEvent.x - prevEvent.x)
+        totalDistanceY += Math.abs(currEvent.y - prevEvent.y)
+
+        cords.add(Pair(round(currEvent.x).toInt(), round(currEvent.y).toInt()))
+    }
+
+    return when {
+        totalDistanceX > 20 || totalDistanceY > 20 -> // Swipe
+            Action(recordingId = recordingId, type = "swipe", cords = cords, duration = duration)
+
+        duration < 500 -> // Click
+            Action(recordingId = recordingId, type = "click", cords = listOf(Pair(round(startEvent.x).toInt(), round(startEvent.y).toInt())), duration = 10)
+
+        else -> // Long Click
+            Action(recordingId = recordingId, type = "long_click", cords = listOf(Pair(round(startEvent.x).toInt(), round(startEvent.y).toInt())), duration = duration)
+    }
+}

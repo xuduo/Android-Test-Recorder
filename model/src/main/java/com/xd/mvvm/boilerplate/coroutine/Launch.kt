@@ -9,3 +9,9 @@ fun io(block: suspend CoroutineScope.() -> Unit) {
         block()
     }
 }
+
+fun main(block: suspend CoroutineScope.() -> Unit) {
+    CoroutineScope(Dispatchers.Main).launch {
+        block()
+    }
+}

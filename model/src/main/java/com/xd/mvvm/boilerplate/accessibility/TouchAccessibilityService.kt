@@ -1,12 +1,12 @@
 package com.xd.mvvm.boilerplate.accessibility
 
-import android.accessibilityservice.AccessibilityGestureEvent
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
 import android.view.MotionEvent
 import android.view.accessibility.AccessibilityEvent
 import com.xd.mvvm.boilerplate.logger.Logger
+import com.xd.mvvm.boilerplate.overlay.OverlayService
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -15,22 +15,33 @@ class TouchAccessibilityService : AccessibilityService() {
 
     private val logger = Logger("TouchAccessibilityService")
     private var statusBarHeight = 0
+    var recordingPackageName = "not.recording"
+    private var foregroundPackageName = "no"
 
     companion object {
         var service: TouchAccessibilityService? = null
 
+        fun isTargetPackage(): Boolean {
+            return service?.recordingPackageName == service?.foregroundPackageName
+        }
+
+        fun getStatusBarHeight(): Int {
+            return service?.getStatusBarHeight() ?: 0
+        }
+
         fun dispatchGesture(
-            motionEvents: MutableList<MotionEvent>,
+            gesture: GestureDescription?,
             callback: GestureResultCallback
-        ) :Boolean {
-            service?.let { service ->
-                val gesture = service.createGestureDescription(motionEvents)
-                motionEvents.clear()
-                gesture?.let { gesture ->
-                    service.dispatchGesture(gesture, callback, null)
-                    return@dispatchGesture true
-                }
+        ): Boolean {
+            val service = service ?: return false
+            // Check if 'gesture' is not null
+            if (gesture != null) {
+                // Dispatch the gesture and return true
+                service.dispatchGesture(gesture, callback, null)
+                return true
             }
+
+            // Return false if 'gesture' is null
             return false
         }
     }
@@ -52,6 +63,7 @@ class TouchAccessibilityService : AccessibilityService() {
         super.onDestroy()
         logger.d("onDestroy")
         service = null
+        recordingPackageName = "not.recording"
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -68,8 +80,9 @@ class TouchAccessibilityService : AccessibilityService() {
         }
 
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            val packageName = event.packageName.toString()
-            logger.i("TYPE_WINDOW_STATE_CHANGED $packageName")
+            foregroundPackageName = event.packageName.toString()
+            logger.i("TYPE_WINDOW_STATE_CHANGED $foregroundPackageName")
+            OverlayService.service?.adjustPassThrough()
         }
 
         if (event.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_END) {
@@ -108,7 +121,7 @@ class TouchAccessibilityService : AccessibilityService() {
         // サービスが中断された時の処理
     }
 
-    private fun createGestureDescription(motionEvents: List<MotionEvent>): GestureDescription? {
+    fun createGestureDescription(motionEvents: List<MotionEvent>): GestureDescription? {
         if (motionEvents.size < 2) return null
 
         val actionDown = motionEvents.firstOrNull { it.action == MotionEvent.ACTION_DOWN }

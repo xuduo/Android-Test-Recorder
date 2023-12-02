@@ -11,6 +11,7 @@ import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
+import android.media.Image
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
@@ -51,6 +52,7 @@ class RecorderService : Service() {
     private var mediaProjection: MediaProjection? = null
     private var imageReader: ImageReader? = null
     private var recording = false
+    var latestImage: Image? = null
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         // Start the service as a foreground service
@@ -58,9 +60,8 @@ class RecorderService : Service() {
             createNotification() // Implement this method to create a proper notification
         startForeground(ID_MEDIA_PROJECTION_SERVICE, notification)
 
-        // Implement your media projection logic here
         CoroutineScope(Dispatchers.Main).launch {
-            delay(1000L) // 1秒間遅延
+            delay(500L)
             startRecording()
         }
         service = this
@@ -98,7 +99,7 @@ class RecorderService : Service() {
         val height = 1280
         val dpi = 320
 
-        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 10)
+        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGB_888, 10)
 
         display = mediaProjection?.createVirtualDisplay(
             "ScreenRecordService",
@@ -111,8 +112,9 @@ class RecorderService : Service() {
             // Handle the image available
             val image = reader.acquireLatestImage()
             if (image != null) {
+                latestImage?.close()
                 logger.d("imageReader on frame ${convertNanosecondsToReadable(image.timestamp)}")
-                image.close()
+                latestImage = image
             }
         }, null)
         recording = true
@@ -121,6 +123,8 @@ class RecorderService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         service = null
+        latestImage?.close()
+        latestImage = null
     }
 
     private fun convertNanosecondsToReadable(timestamp: Long): String {

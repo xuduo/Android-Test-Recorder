@@ -29,7 +29,6 @@ data class Recording(
     @ColumnInfo(name = "icon", typeAffinity = ColumnInfo.BLOB)
     var icon: ByteArray? = null
 
-
 ) {
     fun getIconBitmap(): ImageBitmap? {
         return icon?.let { BitmapFactory.decodeByteArray(it, 0, it.size).asImageBitmap() }

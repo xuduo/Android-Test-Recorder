@@ -129,7 +129,9 @@ class RecordingViewModel @Inject constructor(
             this.setIcon(appInfo.icon)
         }
         io {
-            recordingDao.insertRecording(recording)
+            val recordingId = recordingDao.insertRecording(recording)
+            TouchAccessibilityService.service?.recordingPackageName = appInfo.packageName
+            OverlayService.service?.recordingId = recordingId
         }
     }
 
