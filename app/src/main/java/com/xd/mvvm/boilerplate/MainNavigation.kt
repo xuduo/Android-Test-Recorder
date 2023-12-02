@@ -27,6 +27,7 @@ object MainDestinations {
     const val WEATHER = "weather"
     const val CACHED_WEATHER = "cached_weather"
     const val PROCESS_LIST = "process_list"
+    const val RECORDING_LIST = "recording_list"
 }
 
 /**

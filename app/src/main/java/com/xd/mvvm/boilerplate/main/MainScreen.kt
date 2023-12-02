@@ -116,6 +116,9 @@ fun MainScreen(
             MainScreenItem(text = "Choose App and Record") {
                 navActions.navigate(MainDestinations.PROCESS_LIST)
             }
+            MainScreenItem(text = "Recording List") {
+                navActions.navigate(MainDestinations.RECORDING_LIST)
+            }
         }
     }
 }

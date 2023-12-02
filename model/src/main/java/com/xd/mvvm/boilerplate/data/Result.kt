@@ -2,7 +2,7 @@ package com.xd.mvvm.boilerplate.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-//import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 
 sealed class D<T> {
     open val value: T? = null
@@ -61,15 +61,15 @@ fun <T> MutableLiveData<T>.postNoneEqual(data: T): Boolean {
     }
 }
 
-//fun <T> LiveData<T>.asD(): LiveData<D<T>> {
-//    return Transformations.map(this) { value ->
-//        // Assuming 'value' will not be null for Success. Adjust based on your use case.
-//        if (value != null) {
-//            Success(value)
-//        } else {
-//            // You can choose to return Loading or Error based on your use case
-//            // Here, I am assuming null means Loading. Adjust as necessary.
-//            Loading()
-//        }
-//    }
-//}
+fun <T> LiveData<T>.asD(): LiveData<D<T>> {
+    return this.map() { value ->
+        // Assuming 'value' will not be null for Success. Adjust based on your use case.
+        if (value != null) {
+            Success(value)
+        } else {
+            // You can choose to return Loading or Error based on your use case
+            // Here, I am assuming null means Loading. Adjust as necessary.
+            Loading()
+        }
+    }
+}

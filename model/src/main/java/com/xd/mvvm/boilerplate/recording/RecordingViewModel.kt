@@ -12,11 +12,14 @@ import android.text.TextUtils
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.xd.mvvm.boilerplate.accessibility.TouchAccessibilityService
 import com.xd.mvvm.boilerplate.coroutine.io
 import com.xd.mvvm.boilerplate.dao.RecordingDao
+import com.xd.mvvm.boilerplate.data.D
 import com.xd.mvvm.boilerplate.data.Recording
+import com.xd.mvvm.boilerplate.data.asD
 import com.xd.mvvm.boilerplate.logger.Logger
 import com.xd.mvvm.boilerplate.overlay.OverlayService
 import com.xd.mvvm.boilerplate.recorder.RecorderService
@@ -123,10 +126,15 @@ class RecordingViewModel @Inject constructor(
         val recording = Recording().apply {
             this.name = appInfo.appName
             this.packageName = appInfo.packageName
+            this.setIcon(appInfo.icon)
         }
         io {
             recordingDao.insertRecording(recording)
         }
+    }
+
+    fun getAllRecordings(): LiveData<D<List<Recording>>> {
+        return recordingDao.getAllRecordings().asD()
     }
 
     fun handleScreenCaptureResult(resultCode: Int, data: Intent?) {
