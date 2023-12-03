@@ -30,9 +30,9 @@ import com.xd.mvvm.boilerplate.overlay.OverlayService
 import com.xd.mvvm.boilerplate.recorder.RecorderService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.opencv.android.OpenCVLoader
-import org.opencv.core.MatOfByte
-import org.opencv.imgcodecs.Imgcodecs
+//import org.opencv.android.OpenCVLoader
+//import org.opencv.core.MatOfByte
+//import org.opencv.imgcodecs.Imgcodecs
 import javax.inject.Inject
 
 
@@ -48,23 +48,16 @@ class ScriptingViewModel @Inject constructor(
     init {
         logger.d("RecordingViewModel.init")
         if (BuildConfig.DEBUG) {
-            OpenCVLoader.initDebug()
+//            OpenCVLoader.initDebug()
         } else {
             System.loadLibrary("opencv_java4")
         }
     }
 
     fun findFeatures(imageBytes: ByteArray){
-        val matOfByte = MatOfByte(*imageBytes)
-
-        // Decode the MatOfByte into a Mat
-        val mat = Imgcodecs.imdecode(matOfByte, Imgcodecs.IMREAD_UNCHANGED)
-
-
+//        val matOfByte = MatOfByte(*imageBytes)
+//
+//        // Decode the MatOfByte into a Mat
+//        val mat = Imgcodecs.imdecode(matOfByte, Imgcodecs.IMREAD_UNCHANGED)
     }
-
-
-
-
-
 }

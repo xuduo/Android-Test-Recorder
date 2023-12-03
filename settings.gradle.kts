@@ -31,4 +31,4 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":model")
-include(":opencv")
+//include(":opencv")

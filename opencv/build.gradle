@@ -163,7 +163,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:8.2.0" // Replace VERSION with the correct version number
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20"
         // Other classpaths
     }
 }

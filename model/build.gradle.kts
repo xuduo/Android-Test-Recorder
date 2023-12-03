@@ -49,7 +49,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.moshi)
     implementation(libs.moshikotlin)
-    implementation(project(":opencv"))
+//    implementation(project(":opencv"))
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     testImplementation(libs.junit4)
