@@ -39,7 +39,7 @@ hilt = "2.48.1"
 hiltExt = "1.0.0"
 jacoco = "0.8.7"
 junit4 = "4.13.2"
-kotlin = "1.9.10"
+kotlin = "1.9.21"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.5.0"
@@ -63,7 +63,7 @@ junit = "1.1.5"
 material = "1.10.0"
 moshi = "1.15.0"
 runtime-livedata = "1.5.4"
-opencv = "4.8.1-0"
+opencv = "4.7.0-1.5.9"
 
 [libraries]
 accompanist-appcompat-theme = { group = "com.google.accompanist", name = "accompanist-themeadapter-appcompat", version.ref = "accompanist" }
@@ -151,7 +151,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshikotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
-opencv = { group = "org.openpnp", name = "opencv", version.ref = "opencv" }
+opencv = { group = "org.bytedeco", name = "opencv", version.ref = "opencv" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
