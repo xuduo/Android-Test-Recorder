@@ -7,6 +7,7 @@ import android.content.Intent
 import android.gesture.GestureOverlayView
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
@@ -39,6 +40,7 @@ class OverlayService : Service() {
 
     @Inject
     lateinit var actionImageDao: ActionImageDao
+
     @Inject
     lateinit var actionDao: ActionDao
 
@@ -95,7 +97,7 @@ class OverlayService : Service() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-        overlayView.setBackgroundColor(Color.parseColor("#20FF0000"))
+//        overlayView.setBackgroundColor(Color.parseColor("#20FF0000"))
 
 // Set OnTouchListener
         overlayView.setOnTouchListener { _, event ->
@@ -152,21 +154,37 @@ class OverlayService : Service() {
             logger.e("recordingId less than 0")
             return
         }
-        val action = convertMotionEventsToAction(motionEventList, recordingId, overlayView.width, overlayView.height)
+        val action = convertMotionEventsToAction(
+            motionEventList,
+            recordingId,
+            overlayView.width,
+            overlayView.height
+        )
         motionEventList.clear()
         val gesture = action?.toGestureDescription()
         val image = RecorderService.getLatestImage()
+        val node = TouchAccessibilityService.service?.getViewForGesture(gesture)
         if (action == null || image == null) {
             logger.w("changeToCapture ${action?.type} $gesture ${image?.format}")
             changeToCapture()
         } else {
             changeToPassThrough()
             io {
+                if(node != null) {
+                    action.viewContentDescription = node.contentDescription?.toString() ?: ""
+                    val rect = Rect()
+                    node.getBoundsInScreen(rect)
+                    action.bounds = rect
+                    action.viewClassName = node.className?.toString() ?: ""
+                }
                 val actionId = actionDao.insertAction(action)
-                val actionImage = ActionImage(actionId = actionId, screenShot = convertImageToByteArray(image, action.screenHeight))
+                val actionImage = ActionImage(
+                    actionId = actionId,
+                    screenShot = convertImageToByteArray(image, action.screenHeight)
+                )
                 actionImageDao.insertActionImage(actionImage)
-                logger.i("insert action success ${action.id} ${action.screenWidth} ${action.screenHeight}")
-                withContext(Dispatchers.Main){
+                logger.i("insert action success $action")
+                withContext(Dispatchers.Main) {
                     TouchAccessibilityService.dispatchGesture(
                         gesture,
                         gestureCallback

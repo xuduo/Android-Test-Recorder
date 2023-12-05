@@ -2,7 +2,9 @@ package com.xd.mvvm.boilerplate.data
 
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
+import android.graphics.Rect
 import android.view.MotionEvent
+import androidx.compose.ui.geometry.Size
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -28,14 +30,22 @@ data class Action(
     val type: String,
 
     val cords: List<Pair<Int, Int>>, // This needs to be converted to a storable format
-
     val duration: Int,
-
     val screenWidth: Int,
-
-    val screenHeight: Int
-
+    val screenHeight: Int,
+    var viewContentDescription: String = "",
+    var bounds: Rect = Rect(),
+    var viewClassName: String = ""
 ) {
+    fun getRelativeViewBounds(size: Size): Rect {
+        return Rect(
+            (bounds.left * size.width / screenWidth).toInt(),
+            (bounds.top * size.height / screenHeight).toInt(),
+            (bounds.right * size.width / screenWidth).toInt(),
+            (bounds.bottom * size.height / screenHeight).toInt(),
+        )
+    }
+
     fun getRatioXOnScreen(): Float {
         return cords[0].first.toFloat() / screenWidth.toFloat()
     }

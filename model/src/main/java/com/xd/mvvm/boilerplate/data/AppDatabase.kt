@@ -1,5 +1,6 @@
 package com.xd.mvvm.boilerplate.data
 
+import android.graphics.Rect
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.xd.mvvm.boilerplate.dao.ActionDao
@@ -14,7 +15,7 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.ToJson
 
 @Database(entities = [Recording::class, Action::class, ActionImage::class], version = 1)
-@TypeConverters(CordsConverter::class)
+@TypeConverters(CordsConverter::class, RectConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun recording(): RecordingDao
     abstract fun action(): ActionDao
@@ -32,6 +33,27 @@ class PairAdapter {
         val parts = json.split(",")
         if (parts.size != 2) throw JsonDataException("Invalid json for Pair")
         return Pair(parts[0].toInt(), parts[1].toInt())
+    }
+}
+
+class RectConverter {
+
+    @TypeConverter
+    fun fromRect(rect: Rect?): String {
+        return rect?.let { "${it.left},${it.top},${it.right},${it.bottom}" } ?: ""
+    }
+
+    @TypeConverter
+    fun toRect(data: String): Rect? {
+        if (data.isEmpty()) return null
+
+        return data.split(",").let {
+            if (it.size == 4) {
+                Rect(it[0].toInt(), it[1].toInt(), it[2].toInt(), it[3].toInt())
+            } else {
+                null
+            }
+        }
     }
 }
 

@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.xd.mvvm.boilerplate.logger.Logger
 import com.xd.mvvm.boilerplate.main.MainScreen
 import com.xd.mvvm.boilerplate.recorder.RecorderScreen
 import com.xd.mvvm.boilerplate.recording.ActionImageScreen
@@ -40,13 +41,20 @@ val LocalNavController = compositionLocalOf<NavController> {
     error("No NavController provided")
 }
 
+val LocalLogger = compositionLocalOf<Logger> {
+    error("No LocalLogger provided")
+}
+
 @Composable
 fun MainNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    logger: Logger = remember {
+        Logger("Composable")
+    },
     startDestination: String = MainDestinations.MAIN
 ) {
-    CompositionLocalProvider(LocalNavController provides navController) {
+    CompositionLocalProvider(LocalNavController provides navController, LocalLogger provides logger) {
         NavHost(
             navController = navController,
             startDestination = startDestination,

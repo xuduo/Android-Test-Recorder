@@ -3,8 +3,13 @@ package com.xd.mvvm.boilerplate.accessibility
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
+import android.graphics.Rect
+import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
+import androidx.core.graphics.toRect
+import androidx.core.graphics.toRectF
 import com.xd.mvvm.boilerplate.logger.Logger
 import com.xd.mvvm.boilerplate.overlay.OverlayService
 import java.text.SimpleDateFormat
@@ -68,7 +73,7 @@ class TouchAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         logger.d(
-            "onAccessibilityEvent ${event?.eventType?.toString(16)} ${event?.className} ${
+            "onAccessibilityEvent $foregroundPackageName ${event?.eventType?.toString(16)} ${event?.className} ${
                 formatEventTime(
                     event?.eventTime!!
                 )
@@ -80,7 +85,9 @@ class TouchAccessibilityService : AccessibilityService() {
         }
 
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            foregroundPackageName = event.packageName.toString()
+            if (event.packageName != null) {
+                foregroundPackageName = event.packageName.toString()
+            }
             logger.i("TYPE_WINDOW_STATE_CHANGED $foregroundPackageName")
             OverlayService.service?.adjustPassThrough()
         }
@@ -89,6 +96,44 @@ class TouchAccessibilityService : AccessibilityService() {
             // タッチイベントが終了した時の処理
             logger.d("TYPE_TOUCH_INTERACTION_END $event")
         }
+    }
+
+    fun getViewForGesture(gesture: GestureDescription?): AccessibilityNodeInfo? {
+        if (gesture == null) {
+            return null
+        }
+        // Assuming the gesture is a single stroke for simplicity
+        val stroke = gesture.getStroke(0)
+        val path = stroke.path
+        val gestureBounds = RectF()
+        path.computeBounds(gestureBounds, true)
+        logger.d("getViewForGesture $gestureBounds $rootInActiveWindow")
+        val rootInActiveWindow = rootInActiveWindow ?: return null
+        return findViewForGesture(rootInActiveWindow, gestureBounds.toRect())
+    }
+
+    private fun findViewForGesture(
+        node: AccessibilityNodeInfo,
+        gestureBounds: Rect
+    ): AccessibilityNodeInfo? {
+        val bounds = Rect()
+        node.getBoundsInScreen(bounds)
+        if (bounds.contains(gestureBounds)) {
+            for (i in 0 until node.childCount) {
+                val childNode = node.getChild(i)
+                childNode?.let {
+                    val result = findViewForGesture(it, gestureBounds)
+                    if (result != null) {
+                        return result
+                    }
+                }
+            }
+            if (node.packageName == recordingPackageName) {
+                return node
+            }
+        }
+
+        return null
     }
 
     fun testDispatch() {
