@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.xd.mvvm.boilerplate.model"
+    namespace = "com.xd.mvvm.testrecorder.model"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

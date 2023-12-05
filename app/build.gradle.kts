@@ -27,8 +27,8 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        testInstrumentationRunner = "com.xd.mvvm.boilerplate.test.runner.RecordingTestRunner"
-        applicationId = "com.xd.mvvm.boilerplate"
+        testInstrumentationRunner = "com.xd.mvvm.testrecorder.test.runner.RecordingTestRunner"
+        applicationId = "com.xd.mvvm.testrecorder"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -102,7 +102,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
-    namespace = "com.xd.mvvm.boilerplate"
+    namespace = "com.xd.mvvm.testrecorder"
     buildToolsVersion = "34.0.0"
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

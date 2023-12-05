@@ -20,13 +20,13 @@
 
     <application
         android:allowBackup="false"
-        android:name="com.xd.mvvm.boilerplate.MainApplication"
+        android:name="com.xd.mvvm.testrecorder.MainApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.xd.mvvm.boilerplate.MainActivity"
+            android:name="com.xd.mvvm.testrecorder.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/AppTheme.OverlapSystemBar">
