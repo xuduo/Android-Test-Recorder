@@ -31,7 +31,7 @@ object SharedPreferencesModule {
         @ApplicationContext context: Context,
         moshi: Moshi
     ): SharedPreferencesHelper {
-        return SharedPreferencesHelper(context, "config", moshi)
+        return SharedPreferencesHelper(context, "cache", moshi)
     }
 
     @Provides

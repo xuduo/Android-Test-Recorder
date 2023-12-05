@@ -12,8 +12,12 @@ class SharedPreferencesHelper @Inject constructor(
     private val moshi: Moshi
 ) {
     private val logger = Logger("SharedPreferencesHelper-$name")
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences by lazy {
+        val timestamp = System.currentTimeMillis()
+        val sp = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+        logger.d("getSharedPreferences $name ${System.currentTimeMillis() - timestamp}")
+        sp
+    }
 
     fun getBooleanLiveData(
         key: String,
@@ -45,11 +49,12 @@ class SharedPreferencesHelper @Inject constructor(
     }
 
     fun <T> getObject(key: String, clazz: Class<T>, defaultValue: T? = null): T? {
-
+        val timestamp = System.currentTimeMillis()
         val jsonString = sharedPreferences.getString(key, null)
         try {
             val adapter = moshi.adapter(clazz)
             if (jsonString != null) {
+                logger.d("getObject $key ${System.currentTimeMillis() - timestamp}")
                 return adapter.fromJson(jsonString)
             }
         } catch (e: Exception) {

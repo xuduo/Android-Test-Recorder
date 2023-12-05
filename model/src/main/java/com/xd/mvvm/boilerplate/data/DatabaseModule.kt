@@ -5,10 +5,10 @@ import androidx.room.Room
 import com.xd.mvvm.boilerplate.dao.ActionDao
 import com.xd.mvvm.boilerplate.dao.ActionImageDao
 import com.xd.mvvm.boilerplate.dao.RecordingDao
+import com.xd.mvvm.boilerplate.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -17,14 +17,23 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
+    val logger = Logger("DatabaseModule")
+
+    init {
+        logger.i("DatabaseModule init")
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        return Room.databaseBuilder(
+        val timestamp = System.currentTimeMillis()
+        val module =  Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
             "app_db"
         ).build()
+        logger.i("provideDatabase cost ${System.currentTimeMillis() - timestamp}")
+        return module
     }
 
     @Provides
