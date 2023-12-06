@@ -95,7 +95,12 @@ private fun Item(
             )
             Text(
                 text = recording.name ?: "",
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = recording.getFormattedCreateTime(),
+                style = MaterialTheme.typography.h6,
             )
         }
     }

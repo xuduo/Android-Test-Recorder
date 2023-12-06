@@ -95,7 +95,7 @@ class RecordingViewModel @Inject constructor(
                         val lastTimeUsed = lastTimeUsedMap[appInfo.packageName] ?: 0
                         val intent =
                             context.packageManager.getLaunchIntentForPackage(appInfo.packageName)
-                        logger.d("getLaunchIntentForPackage ${appInfo.packageName} ${intent != null} ${iconBitmap != null} ${iconDrawable != null}")
+                        logger.v("getLaunchIntentForPackage ${appInfo.packageName} ${intent != null} ${iconBitmap != null} ${iconDrawable != null}")
                         if (iconBitmap != null && intent != null) {
                             AppInfo(iconBitmap, appInfo.packageName, appName, lastTimeUsed)
                         } else null

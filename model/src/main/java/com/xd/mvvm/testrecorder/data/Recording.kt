@@ -8,6 +8,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ColumnInfo
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Entity(tableName = "recordings")
 data class Recording(
@@ -32,6 +35,11 @@ data class Recording(
 ) {
     fun getIconBitmap(): ImageBitmap? {
         return icon?.let { BitmapFactory.decodeByteArray(it, 0, it.size).asImageBitmap() }
+    }
+
+    fun getFormattedCreateTime(): String {
+        val formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+        return formatter.format(Date(createTime))
     }
 
     fun setIcon(

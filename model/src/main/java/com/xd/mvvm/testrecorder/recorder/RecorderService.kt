@@ -119,17 +119,16 @@ class RecorderService : Service() {
             val image = reader.acquireLatestImage()
             if (image != null) {
                 latestImage?.close()
-                logger.d("imageReader on frame ${image.format}")
+                logger.v("imageReader on frame ${image.format}")
                 latestImage = image
             }
         }, null)
         recording = true
     }
 
-    fun getScreenMetrics(): DisplayMetrics {
+    private fun getScreenMetrics(): DisplayMetrics {
         val displayMetrics = DisplayMetrics()
-        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        display?.display?.getMetrics(displayMetrics)
         return displayMetrics
     }
 
