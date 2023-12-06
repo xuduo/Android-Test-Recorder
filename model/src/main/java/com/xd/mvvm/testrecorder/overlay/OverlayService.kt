@@ -5,7 +5,6 @@ import android.accessibilityservice.GestureDescription
 import android.app.Service
 import android.content.Intent
 import android.gesture.GestureOverlayView
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build

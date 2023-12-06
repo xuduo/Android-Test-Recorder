@@ -1,11 +1,9 @@
 package com.xd.mvvm.testrecorder.coroutine
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataScope
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 fun io(block: suspend CoroutineScope.() -> Unit) {

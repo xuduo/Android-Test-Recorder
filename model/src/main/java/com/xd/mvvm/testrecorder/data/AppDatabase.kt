@@ -3,16 +3,16 @@ package com.xd.mvvm.testrecorder.data
 import android.graphics.Rect
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.xd.mvvm.testrecorder.dao.ActionDao
-import com.xd.mvvm.testrecorder.dao.ActionImageDao
-import com.xd.mvvm.testrecorder.dao.RecordingDao
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
+import com.squareup.moshi.Types
+import com.xd.mvvm.testrecorder.dao.ActionDao
+import com.xd.mvvm.testrecorder.dao.ActionImageDao
+import com.xd.mvvm.testrecorder.dao.RecordingDao
 
 @Database(entities = [Recording::class, Action::class, ActionImage::class], version = 1)
 @TypeConverters(CordsConverter::class, RectConverter::class)

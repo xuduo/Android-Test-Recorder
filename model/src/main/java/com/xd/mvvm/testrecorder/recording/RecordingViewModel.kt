@@ -10,9 +10,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.projection.MediaProjectionManager
 import android.provider.Settings
-import android.provider.Settings.SettingNotFoundException
-import android.text.TextUtils.SimpleStringSplitter
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.core.content.ContextCompat
@@ -22,16 +19,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xd.mvvm.testrecorder.accessibility.TouchAccessibilityService
 import com.xd.mvvm.testrecorder.coroutine.io
-import com.xd.mvvm.testrecorder.coroutine.ioLiveData
 import com.xd.mvvm.testrecorder.dao.ActionDao
 import com.xd.mvvm.testrecorder.dao.ActionImageDao
 import com.xd.mvvm.testrecorder.dao.RecordingDao
 import com.xd.mvvm.testrecorder.data.Action
 import com.xd.mvvm.testrecorder.data.ActionImage
-import com.xd.mvvm.testrecorder.data.D
 import com.xd.mvvm.testrecorder.data.Recording
 import com.xd.mvvm.testrecorder.data.RecordingWithActionCount
-import com.xd.mvvm.testrecorder.data.asD
 import com.xd.mvvm.testrecorder.data.postNoneEqual
 import com.xd.mvvm.testrecorder.logger.Logger
 import com.xd.mvvm.testrecorder.overlay.OverlayService

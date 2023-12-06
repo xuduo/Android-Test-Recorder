@@ -12,8 +12,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +23,6 @@ import com.xd.mvvm.testrecorder.data.Action
 import com.xd.mvvm.testrecorder.goToActionImage
 import com.xd.mvvm.testrecorder.logger.L
 import com.xd.mvvm.testrecorder.util.LiveDataLoadingContent
-import com.xd.mvvm.testrecorder.util.RefreshingLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 
 @Composable
