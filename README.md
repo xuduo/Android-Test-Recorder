@@ -1,4 +1,5 @@
 # Android Test Recorder
+[![Android CI](https://github.com/xuduo/Android-Test-Recorder/actions/workflows/android-ci.yaml/badge.svg)](https://github.com/xuduo/Android-Test-Recorder/actions/workflows/android-ci.yaml)
 
 *   Working in progress
 *   Like Android Espresso Test Recorder, but it runs on the phone, and works with apps built with compose and flutter.
