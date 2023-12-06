@@ -72,7 +72,7 @@ private fun ActionImageScreenContent(
     val logger = LocalLogger.current
     val actions by viewModel.getActionsByRecordingId(recordingId)
         .observeAsState()
-    actions?.value?.let {
+    actions?.let {
         val pagerState =
             rememberPagerState(initialPage = it.indexOfFirst { item -> item.id == actionId }) { it.size }
         HorizontalPager(
@@ -81,7 +81,7 @@ private fun ActionImageScreenContent(
                 .fillMaxSize()
                 .background(Color.Black)
         ) { page ->
-            val action = actions?.value?.get(page)
+            val action = actions?.get(page)
             action?.let { theAction ->
                 LaunchedEffect(pagerState.currentPage) {
                     // This block is called when the currentPage changes
@@ -92,40 +92,59 @@ private fun ActionImageScreenContent(
                 }.observeAsState()
                 Log.d(
                     "ActionImageScreen",
-                    "draw page ${actionImage?.id} ${theAction.id} ${theAction.cords}  ${actionImage?.screenShot?.size}"
+                    "draw action page cords:${theAction.cords} bounds:${theAction.viewBounds}  screen:${theAction.screenWidth}x${theAction.screenHeight} ${actionImage?.screenShot?.size}"
                 )
-                actionImage?.let {
+                actionImage?.let { theActionImage ->
                     val imageBitmap =
-                        BitmapFactory.decodeByteArray(it.screenShot, 0, it.screenShot.size)
+                        BitmapFactory.decodeByteArray(
+                            theActionImage.screenShot,
+                            0,
+                            theActionImage.screenShot.size
+                        )
                             .asImageBitmap()
-                    BoxWithConstraints {
+                    BoxWithConstraints(
+                        modifier
+                            .fillMaxSize()) {
                         // Calculate aspect ratio
                         val aspectRatioBox = maxWidth / maxHeight
                         val aspectRatioImage =
                             imageBitmap.width.toFloat() / imageBitmap.height.toFloat()
-                        val mod = if (aspectRatioImage > aspectRatioBox) {
+                        val ratio = aspectRatioBox / aspectRatioImage
+                        val mod = if (ratio < 1) {
                             // Image is wider than box, add vertical padding
-                            val scaledImageHeight = maxWidth.value / aspectRatioImage
+                            val scaledImageHeight = maxHeight.value * ratio
                             val totalPadding = maxHeight.value - scaledImageHeight
                             val padding = totalPadding / 2
-                            Log.d("ActionImageScreen", "padding v $padding")
+                            Log.d(
+                                "ActionImageScreen",
+                                "padding v $ratio $padding $aspectRatioBox $aspectRatioImage ${imageBitmap.width}x${imageBitmap.height} $maxWidth"
+                            )
                             modifier
                                 .padding(top = padding.dp, bottom = padding.dp)
                         } else {
                             // Image is taller than box, add horizontal padding
-                            val scaledImageWidth = maxHeight.value * aspectRatioImage
+                            val scaledImageWidth = maxWidth.value / ratio
                             val totalPadding = maxWidth.value - scaledImageWidth
                             val padding = totalPadding / 2
-                            Log.d("ActionImageScreen", "padding h $padding")
+                            Log.d(
+                                "ActionImageScreen",
+                                "padding h $ratio $padding $aspectRatioBox $aspectRatioImage ${imageBitmap.width}x${imageBitmap.height} $maxWidth"
+                            )
                             modifier
                                 .padding(start = padding.dp, end = padding.dp)
                         }
                         BoxWithConstraints(modifier = mod) {
                             Image(
                                 bitmap = imageBitmap,
+                                modifier = modifier
+                                    .padding(0.dp)
+                                    .fillMaxSize(),
                                 contentDescription = "Screenshot", // Provide a description for accessibility
-                                contentScale = ContentScale.Crop // Adjust content scale as needed
+                                contentScale = ContentScale.FillBounds // Adjust content scale as needed
                             )
+//                            Box(modifier = modifier
+//                                .background(Color.Yellow)
+//                                .fillMaxSize())
                             Image(
                                 painter = painterResource(id = R.drawable.touch_app),
                                 contentDescription = null, // Provide a suitable content description
@@ -139,7 +158,7 @@ private fun ActionImageScreenContent(
                                 val rect = action.getRelativeViewBounds(
                                     size
                                 )
-                                logger.d("rect ${action.bounds} $rect")
+                                logger.d("rect ${action.viewBounds} $rect")
                                 drawRect(
                                     color = Color.Red,
                                     size = Size(

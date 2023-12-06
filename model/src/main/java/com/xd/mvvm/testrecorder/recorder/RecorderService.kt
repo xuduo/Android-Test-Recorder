@@ -63,13 +63,18 @@ class RecorderService : Service() {
         val notification =
             createNotification() // Implement this method to create a proper notification
         startForeground(ID_MEDIA_PROJECTION_SERVICE, notification)
+        logger.i("RecorderService onStartCommand")
+        return START_NOT_STICKY
+    }
 
+    override fun onCreate() {
+        super.onCreate()
+        logger.i("RecorderService onCreate")
+        service = this
         CoroutineScope(Dispatchers.Main).launch {
-            delay(500L)
+            delay(1000L)
             startRecording()
         }
-        service = this
-        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -127,9 +132,10 @@ class RecorderService : Service() {
     }
 
     private fun getScreenMetrics(): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        display?.display?.getMetrics(displayMetrics)
-        return displayMetrics
+        val metrics = DisplayMetrics()
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getRealMetrics(metrics)
+        return metrics
     }
 
     override fun onDestroy() {

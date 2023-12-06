@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
 import com.xd.mvvm.testrecorder.data.Recording
+import com.xd.mvvm.testrecorder.data.RecordingWithActionCount
 
 @Dao
 interface RecordingDao {
@@ -26,6 +27,9 @@ interface RecordingDao {
     // Query all recordings
     @Query("SELECT * FROM recordings order by id desc")
     fun getAllRecordings(): LiveData<List<Recording>>
+
+    @Query("SELECT recordings.*, (SELECT COUNT(*) FROM actions WHERE recordingId = recordings.id) AS actionCount FROM recordings order by id desc")
+    fun getRecordingsWithActionCount(): LiveData<List<RecordingWithActionCount>>
 
     // Query a single recording by ID
     @Query("SELECT * FROM recordings WHERE id = :id")

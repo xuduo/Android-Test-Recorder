@@ -30,6 +30,7 @@ import com.xd.mvvm.testrecorder.data.Action
 import com.xd.mvvm.testrecorder.data.ActionImage
 import com.xd.mvvm.testrecorder.data.D
 import com.xd.mvvm.testrecorder.data.Recording
+import com.xd.mvvm.testrecorder.data.RecordingWithActionCount
 import com.xd.mvvm.testrecorder.data.asD
 import com.xd.mvvm.testrecorder.data.postNoneEqual
 import com.xd.mvvm.testrecorder.logger.Logger
@@ -166,12 +167,12 @@ class RecordingViewModel @Inject constructor(
         }
     }
 
-    fun getAllRecordings(): LiveData<D<List<Recording>>> {
-        return recordingDao.getAllRecordings().asD()
+    fun getAllRecordings(): LiveData<List<RecordingWithActionCount>> {
+        return recordingDao.getRecordingsWithActionCount()
     }
 
-    fun getActionsByRecordingId(recordingId: Long): LiveData<D<List<Action>>> {
-        return actionDao.getActionsByRecordingId(recordingId = recordingId).asD()
+    fun getActionsByRecordingId(recordingId: Long): LiveData<List<Action>> {
+        return actionDao.getActionsByRecordingId(recordingId = recordingId)
     }
 
     fun handleScreenCaptureResult(resultCode: Int, data: Intent?) {

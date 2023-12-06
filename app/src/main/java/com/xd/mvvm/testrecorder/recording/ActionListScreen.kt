@@ -24,6 +24,7 @@ import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.data.Action
 import com.xd.mvvm.testrecorder.goToActionImage
 import com.xd.mvvm.testrecorder.logger.L
+import com.xd.mvvm.testrecorder.util.LiveDataLoadingContent
 import com.xd.mvvm.testrecorder.util.RefreshingLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 
@@ -37,7 +38,7 @@ fun ActionListScreen(
         scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize(),
         topBar = {
-            AppBar(R.string.choose_app_to_record) // Change the string resource to your app's name
+            AppBar(R.string.action_list) // Change the string resource to your app's name
         },
     ) {
         ActionListScreenContent(
@@ -53,11 +54,10 @@ private fun ActionListScreenContent(
     viewModel: RecordingViewModel = hiltViewModel(),
     modifier: Modifier,
 ) {
-    val data by viewModel.getActionsByRecordingId(recordingId).observeAsState()
+    val data = viewModel.getActionsByRecordingId(recordingId)
     L.d("RecordingViewModel.getActionsByRecordingId() ${data?.value}")
-    RefreshingLoadingContent(
-        data,
-        onRefresh = { viewModel.getAllRecordings() }
+    LiveDataLoadingContent(
+        data
     ) {
         LazyColumn {
             L.d("WeatherContent RecordingListScreenContent ${it.size}")

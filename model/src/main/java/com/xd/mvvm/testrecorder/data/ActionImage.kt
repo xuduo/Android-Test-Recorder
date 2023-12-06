@@ -31,20 +31,21 @@ data class ActionImage(
     val screenShot: ByteArray
 )
 
-fun convertImageToByteArray(image: Image, overlayHeight: Int): ByteArray {
+fun convertImageToByteArray(image: Image, cropTop: Int = 0, cropHeight: Int = 0): ByteArray {
     Log.d("convertImageToByteArray", "convertImageToByteArray ${image.width} ${image.height}")
     val originalBitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
     originalBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
 
-    // Check if the crop amount is not greater than the image height
-    val cropHeight =
-        if (overlayHeight < originalBitmap.height) originalBitmap.height - overlayHeight else 0
-
     // Create a new bitmap with the top n pixels cropped
     val croppedBitmap = Bitmap.createBitmap(
         originalBitmap,
-        0, cropHeight,  // x and y coordinates of the first pixel
-        originalBitmap.width, originalBitmap.height - cropHeight // new width and height
+        0, cropTop,  // x and y coordinates of the first pixel
+        originalBitmap.width,
+        if (cropHeight == 0) {
+            image.height - cropTop// new width and height
+        } else {
+            cropHeight
+        }
     )
 
     val stream = ByteArrayOutputStream()
@@ -55,6 +56,7 @@ fun convertImageToByteArray(image: Image, overlayHeight: Int): ByteArray {
     originalBitmap.recycle()
     croppedBitmap.recycle()
     image.close()
+    stream.close()
 
     return byteArray
 }

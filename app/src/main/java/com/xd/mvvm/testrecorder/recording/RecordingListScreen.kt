@@ -24,8 +24,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.testrecorder.LocalNavController
 import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.data.Recording
+import com.xd.mvvm.testrecorder.data.RecordingWithActionCount
 import com.xd.mvvm.testrecorder.goToActionList
 import com.xd.mvvm.testrecorder.logger.L
+import com.xd.mvvm.testrecorder.util.LiveDataLoadingContent
 import com.xd.mvvm.testrecorder.util.RefreshingLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 
@@ -38,7 +40,7 @@ fun RecordingListScreen(
         scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize(),
         topBar = {
-            AppBar(R.string.choose_app_to_record) // Change the string resource to your app's name
+            AppBar(R.string.recording_list) // Change the string resource to your app's name
         },
     ) {
         RecordingListScreenContent(
@@ -52,10 +54,9 @@ private fun RecordingListScreenContent(
     viewModel: RecordingViewModel = hiltViewModel(),
     modifier: Modifier,
 ) {
-    val data by viewModel.getAllRecordings().observeAsState()
-    RefreshingLoadingContent(
-        data,
-        onRefresh = { viewModel.getAllRecordings() }
+    val data = viewModel.getAllRecordings()
+    LiveDataLoadingContent(
+        data
     ) {
         LazyColumn {
             L.d("WeatherContent RecordingListScreenContent ${it.size}")
@@ -70,7 +71,7 @@ private fun RecordingListScreenContent(
 
 @Composable
 private fun Item(
-    recording: Recording
+    recording: RecordingWithActionCount
 ) {
     val nav = LocalNavController.current
     Row(
@@ -78,14 +79,14 @@ private fun Item(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                nav.goToActionList(recording.id)
+                nav.goToActionList(recording.recording.id)
             }
             .padding(
                 horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                 vertical = dimensionResource(id = R.dimen.list_item_padding),
             )
     ) {
-        recording.getIconBitmap()?.let {
+        recording.recording.getIconBitmap()?.let {
             Image(
                 bitmap = it,
                 contentDescription = "App Icon",
@@ -94,12 +95,12 @@ private fun Item(
                     .size(40.dp)
             )
             Text(
-                text = recording.name ?: "",
+                text = "${recording.actionCount} Actions",
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = recording.getFormattedCreateTime(),
+                text = recording.recording.getFormattedCreateTime(),
                 style = MaterialTheme.typography.h6,
             )
         }

@@ -34,16 +34,20 @@ data class Action(
     val screenWidth: Int,
     val screenHeight: Int,
     var viewContentDescription: String = "",
-    var bounds: Rect = Rect(),
+    var viewBounds: Rect = Rect(),
     var viewClassName: String = ""
 ) {
     fun getRelativeViewBounds(size: Size): Rect {
         return Rect(
-            (bounds.left * size.width / screenWidth).toInt(),
-            (bounds.top * size.height / screenHeight).toInt(),
-            (bounds.right * size.width / screenWidth).toInt(),
-            (bounds.bottom * size.height / screenHeight).toInt(),
+            (viewBounds.left * size.width / screenWidth).toInt(),
+            (viewBounds.top * size.height / screenHeight).toInt(),
+            (viewBounds.right * size.width / screenWidth).toInt(),
+            (viewBounds.bottom * size.height / screenHeight).toInt(),
         )
+    }
+
+    fun getViewClassNameShort(): String {
+        return viewClassName.substringAfterLast('.')
     }
 
     fun getRatioXOnScreen(): Float {
@@ -54,7 +58,7 @@ data class Action(
         return cords[0].second.toFloat() / screenHeight.toFloat()
     }
 
-    fun toGestureDescription(): GestureDescription? {
+    fun toGestureDescription(statusBarHeight: Int): GestureDescription? {
         val gestureBuilder = GestureDescription.Builder()
         val path = Path()
 
@@ -62,17 +66,17 @@ data class Action(
             "click", "long_click" -> {
                 // For both click and long click, use the first coordinate
                 cords.firstOrNull()?.let { (x, y) ->
-                    path.moveTo(x.toFloat(), y.toFloat())
-                    path.lineTo(x.toFloat(), y.toFloat())
+                    path.moveTo(x.toFloat(), y.toFloat() + statusBarHeight)
+                    path.lineTo(x.toFloat(), y.toFloat() + statusBarHeight)
                 }
             }
 
             "swipe" -> {
                 // For swipe, create a path from the first to the last coordinate
                 cords.firstOrNull()?.let { (startX, startY) ->
-                    path.moveTo(startX.toFloat(), startY.toFloat())
+                    path.moveTo(startX.toFloat(), startY.toFloat() + statusBarHeight)
                     cords.lastOrNull()?.let { (endX, endY) ->
-                        path.lineTo(endX.toFloat(), endY.toFloat())
+                        path.lineTo(endX.toFloat(), endY.toFloat() + statusBarHeight)
                     }
                 }
             }

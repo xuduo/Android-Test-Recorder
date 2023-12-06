@@ -71,7 +71,7 @@ class TouchAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        logger.d(
+        logger.v(
             "onAccessibilityEvent $foregroundPackageName ${event?.eventType?.toString(16)} ${event?.className} ${
                 formatEventTime(
                     event?.eventTime!!
@@ -108,31 +108,39 @@ class TouchAccessibilityService : AccessibilityService() {
         path.computeBounds(gestureBounds, true)
         logger.d("getViewForGesture $gestureBounds $rootInActiveWindow")
         val rootInActiveWindow = rootInActiveWindow ?: return null
+        val validViews = mutableListOf<AccessibilityNodeInfo>()
         return findViewForGesture(rootInActiveWindow, gestureBounds.toRect())
     }
 
-    private fun findViewForGesture(
-        node: AccessibilityNodeInfo,
-        gestureBounds: Rect
-    ): AccessibilityNodeInfo? {
-        val bounds = Rect()
-        node.getBoundsInScreen(bounds)
-        if (bounds.contains(gestureBounds)) {
-            for (i in 0 until node.childCount) {
-                val childNode = node.getChild(i)
-                childNode?.let {
-                    val result = findViewForGesture(it, gestureBounds)
-                    if (result != null) {
-                        return result
+    private fun findViewForGesture(node: AccessibilityNodeInfo, bounds: Rect): AccessibilityNodeInfo? {
+        // Base case: if the node is null or not visible, return null
+        if (node.isVisibleToUser.not()) {
+            return null
+        }
+
+        // Check if the node is clickable and its bounds contain the specified bounds
+        val nodeBounds = Rect()
+        node.getBoundsInScreen(nodeBounds)
+        val isClickable = node.isClickable && nodeBounds.contains(bounds)
+
+        var bestMatch: AccessibilityNodeInfo? = if (isClickable) node else null
+
+        // Recursively search child nodes
+        for (i in 0 until node.childCount) {
+            node.getChild(i)?.let { childNode ->
+                val foundNode = findViewForGesture(childNode, bounds)
+                if (foundNode != null) {
+                    // Compare the bounds to find the smallest node
+                    val foundNodeBounds = Rect()
+                    foundNode.getBoundsInScreen(foundNodeBounds)
+                    if (bestMatch == null || foundNodeBounds.width() * foundNodeBounds.height() < nodeBounds.width() * nodeBounds.height()) {
+                        bestMatch = foundNode
                     }
                 }
             }
-            if (node.packageName == recordingPackageName) {
-                return node
-            }
         }
 
-        return null
+        return bestMatch
     }
 
     fun testDispatch() {
@@ -163,48 +171,6 @@ class TouchAccessibilityService : AccessibilityService() {
 
     override fun onInterrupt() {
         // サービスが中断された時の処理
-    }
-
-    fun createGestureDescription(motionEvents: List<MotionEvent>): GestureDescription? {
-        if (motionEvents.size < 2) return null
-
-        val actionDown = motionEvents.firstOrNull { it.action == MotionEvent.ACTION_DOWN }
-        val actionUp = motionEvents.lastOrNull { it.action == MotionEvent.ACTION_UP }
-
-        if (actionDown == null || actionUp == null) return null
-
-        val clickDurationThreshold = 200 // milliseconds
-        if (actionUp.eventTime - actionDown.eventTime > clickDurationThreshold) return null
-
-        val movementThreshold = 10 // pixels
-        if (Math.abs(actionUp.x - actionDown.x) > movementThreshold ||
-            Math.abs(actionUp.y - actionDown.y) > movementThreshold
-        ) {
-            return null
-        }
-
-        // Create a path for the click gesture at the position of the ACTION_DOWN event
-        val clickPath = Path().apply {
-            moveTo(actionDown.x, actionDown.y + statusBarHeight)
-        }
-
-        // Create a GestureDescription for the click
-        val clickGesture = GestureDescription.Builder().apply {
-            addStroke(GestureDescription.StrokeDescription(clickPath, 0, 100)) // 1ms duration
-        }.build()
-
-        return clickGesture
-    }
-
-    // Implement this method to calculate the duration of your gesture
-//    private fun calculateGestureDuration(): Long {
-//        // Example implementation
-//        return motionEventList.last().eventTime - motionEventList.first().downTime
-//    }
-
-    private fun logEvent(message: String) {
-        // ログ記録のためのメソッド（実際の実装に合わせてください）
-        println(message)
     }
 
     fun getStatusBarHeight(): Int {

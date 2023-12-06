@@ -5,6 +5,7 @@ import android.accessibilityservice.GestureDescription
 import android.app.Service
 import android.content.Intent
 import android.gesture.GestureOverlayView
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
@@ -96,7 +97,7 @@ class OverlayService : Service() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-//        overlayView.setBackgroundColor(Color.parseColor("#20FF0000"))
+//        overlayView.setBackgroundColor(Color.parseColor("#60FF0000"))
 
 // Set OnTouchListener
         overlayView.setOnTouchListener { _, event ->
@@ -160,26 +161,36 @@ class OverlayService : Service() {
             overlayView.height
         )
         motionEventList.clear()
-        val gesture = action?.toGestureDescription()
-        val image = RecorderService.getLatestImage()
+        val gesture = action?.toGestureDescription(TouchAccessibilityService.getStatusBarHeight())
         val node = TouchAccessibilityService.service?.getViewForGesture(gesture)
+        val image = RecorderService.getLatestImage()
         if (action == null || image == null) {
-            logger.w("changeToCapture ${action?.type} $gesture ${image?.format}")
+            logger.w("changeToCapture action:$action image:$image")
             changeToCapture()
         } else {
             changeToPassThrough()
             io {
-                if(node != null) {
+                if (node != null) {
                     action.viewContentDescription = node.contentDescription?.toString() ?: ""
                     val rect = Rect()
                     node.getBoundsInScreen(rect)
-                    action.bounds = rect
+                    action.viewBounds = Rect(
+                        rect.left,
+                        rect.top - TouchAccessibilityService.getStatusBarHeight(),
+                        rect.right,
+                        rect.bottom - TouchAccessibilityService.getStatusBarHeight()
+                    )
                     action.viewClassName = node.className?.toString() ?: ""
                 }
+
                 val actionId = actionDao.insertAction(action)
                 val actionImage = ActionImage(
                     actionId = actionId,
-                    screenShot = convertImageToByteArray(image, action.screenHeight)
+                    screenShot = convertImageToByteArray(
+                        image,
+                        TouchAccessibilityService.getStatusBarHeight(),
+                        overlayView.height
+                    )
                 )
                 actionImageDao.insertActionImage(actionImage)
                 logger.i("insert action success $action")
