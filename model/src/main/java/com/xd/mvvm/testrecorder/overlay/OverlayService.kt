@@ -161,7 +161,7 @@ class OverlayService : Service() {
         )
         motionEventList.clear()
         val gesture = action?.toGestureDescription(TouchAccessibilityService.getStatusBarHeight())
-        val node = TouchAccessibilityService.service?.getViewForGesture(gesture)
+        val pair = TouchAccessibilityService.getViewForGesture(gesture)
         val image = RecorderService.getLatestImage()
         if (action == null || image == null) {
             logger.w("changeToCapture action:$action image:$image")
@@ -169,19 +169,41 @@ class OverlayService : Service() {
         } else {
             changeToPassThrough()
             io {
+                val node = pair.first
                 if (node != null) {
                     action.viewContentDescription = node.contentDescription?.toString() ?: ""
+                    action.viewText = node.text?.toString() ?: ""
                     val rect = Rect()
                     node.getBoundsInScreen(rect)
-                    action.viewBounds = Rect(
+                    action.clickableViewBounds = Rect(
                         rect.left,
                         rect.top - TouchAccessibilityService.getStatusBarHeight(),
                         rect.right,
                         rect.bottom - TouchAccessibilityService.getStatusBarHeight()
                     )
-                    action.viewClassName = node.className?.toString() ?: ""
+                    action.featureViewBounds = Rect(
+                        rect.left,
+                        rect.top - TouchAccessibilityService.getStatusBarHeight(),
+                        rect.right,
+                        rect.bottom - TouchAccessibilityService.getStatusBarHeight()
+                    )
+                    action.clickableViewClassName = node.className?.toString() ?: ""
+                    action.featureViewClassName = node.className?.toString() ?: ""
                 }
-
+                val feature = pair.second
+                if (feature != null && feature != node) {
+                    action.viewContentDescription = feature.contentDescription?.toString() ?: ""
+                    action.viewText = feature.text?.toString() ?: ""
+                    val rect = Rect()
+                    feature.getBoundsInScreen(rect)
+                    action.featureViewBounds = Rect(
+                        rect.left,
+                        rect.top - TouchAccessibilityService.getStatusBarHeight(),
+                        rect.right,
+                        rect.bottom - TouchAccessibilityService.getStatusBarHeight()
+                    )
+                    action.featureViewClassName = feature.className?.toString() ?: ""
+                }
                 val actionId = actionDao.insertAction(action)
                 val actionImage = ActionImage(
                     actionId = actionId,

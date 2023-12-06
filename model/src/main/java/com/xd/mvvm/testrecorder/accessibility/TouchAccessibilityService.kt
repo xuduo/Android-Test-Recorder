@@ -33,6 +33,10 @@ class TouchAccessibilityService : AccessibilityService() {
             return service?.getStatusBarHeight() ?: 0
         }
 
+        fun getViewForGesture(gesture: GestureDescription?): Pair<AccessibilityNodeInfo?, AccessibilityNodeInfo?> {
+            return service?.getViewForGesture(gesture) ?: Pair(null, null)
+        }
+
         fun dispatchGesture(
             gesture: GestureDescription?,
             callback: GestureResultCallback
@@ -97,33 +101,56 @@ class TouchAccessibilityService : AccessibilityService() {
         }
     }
 
-    fun getViewForGesture(gesture: GestureDescription?): AccessibilityNodeInfo? {
+    fun getViewForGesture(gesture: GestureDescription?): Pair<AccessibilityNodeInfo?, AccessibilityNodeInfo?> {
         if (gesture == null) {
-            return null
+            return Pair(null, null)
         }
         // Assuming the gesture is a single stroke for simplicity
         val stroke = gesture.getStroke(0)
         val path = stroke.path
         val gestureBounds = RectF()
         path.computeBounds(gestureBounds, true)
-        logger.d("getViewForGesture $gestureBounds $rootInActiveWindow")
-        val rootInActiveWindow = rootInActiveWindow ?: return null
-        val validViews = mutableListOf<AccessibilityNodeInfo>()
-        return findViewForGesture(rootInActiveWindow, gestureBounds.toRect())
+        val rootInActiveWindow = rootInActiveWindow ?: return Pair(null, null)
+        val click = findViewForGesture(rootInActiveWindow, gestureBounds.toRect())
+        var feature = findViewForGesture(click, null, true)
+        if (feature == null) {
+            feature = findViewForGesture(
+                click, null,
+                checkHasDesc = false,
+                checkHasText = true
+            )
+        }
+        logger.d("getViewForGesture has feature:${feature !== click} $gestureBounds $rootInActiveWindow")
+        return Pair(click, feature)
     }
 
-    private fun findViewForGesture(node: AccessibilityNodeInfo, bounds: Rect): AccessibilityNodeInfo? {
+    private fun findViewForGesture(
+        node: AccessibilityNodeInfo?,
+        bounds: Rect?,
+        checkHasDesc: Boolean = false,
+        checkHasText: Boolean = false
+    ): AccessibilityNodeInfo? {
         // Base case: if the node is null or not visible, return null
-        if (node.isVisibleToUser.not()) {
+        if (node == null || node.isVisibleToUser.not()) {
             return null
         }
 
         // Check if the node is clickable and its bounds contain the specified bounds
         val nodeBounds = Rect()
         node.getBoundsInScreen(nodeBounds)
-        val isClickable = node.isClickable && nodeBounds.contains(bounds)
+        var valid = true
+        if (bounds != null) {
+            valid =
+                node.isClickable && nodeBounds.contains(bounds) && node.packageName == recordingPackageName
+        }
+        if (checkHasDesc) {
+            valid = valid && node.contentDescription?.isNotEmpty() == true
+        }
+        if (checkHasText) {
+            valid = valid && node.text?.isNotEmpty() == true
+        }
 
-        var bestMatch: AccessibilityNodeInfo? = if (isClickable) node else null
+        var bestMatch: AccessibilityNodeInfo? = if (valid) node else null
 
         // Recursively search child nodes
         for (i in 0 until node.childCount) {

@@ -34,20 +34,23 @@ data class Action(
     val screenWidth: Int,
     val screenHeight: Int,
     var viewContentDescription: String = "",
-    var viewBounds: Rect = Rect(),
-    var viewClassName: String = ""
+    var viewText: String = "",
+    var clickableViewBounds: Rect = Rect(),// where the click is triggered
+    var featureViewBounds: Rect = Rect(), // if there is view with ContentDescription or Text inside the clickableViewBounds
+    var clickableViewClassName: String = "",
+    var featureViewClassName: String = ""
 ) {
-    fun getRelativeViewBounds(size: Size): Rect {
+    fun getRelativeViewBounds(bounds:Rect, size: Size): Rect {
         return Rect(
-            (viewBounds.left * size.width / screenWidth).toInt(),
-            (viewBounds.top * size.height / screenHeight).toInt(),
-            (viewBounds.right * size.width / screenWidth).toInt(),
-            (viewBounds.bottom * size.height / screenHeight).toInt(),
+            (bounds.left * size.width / screenWidth).toInt(),
+            (bounds.top * size.height / screenHeight).toInt(),
+            (bounds.right * size.width / screenWidth).toInt(),
+            (bounds.bottom * size.height / screenHeight).toInt(),
         )
     }
 
     fun getViewClassNameShort(): String {
-        return viewClassName.substringAfterLast('.')
+        return clickableViewClassName.substringAfterLast('.')
     }
 
     fun getRatioXOnScreen(): Float {

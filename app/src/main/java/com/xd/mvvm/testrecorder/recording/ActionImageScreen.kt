@@ -6,14 +6,21 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.testrecorder.LocalLogger
 import com.xd.mvvm.testrecorder.R
+import com.xd.mvvm.testrecorder.data.Action
+import com.xd.mvvm.testrecorder.data.ActionImage
 import com.xd.mvvm.testrecorder.widget.AppBar
 
 @Composable
@@ -79,105 +88,147 @@ private fun ActionImageScreenContent(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
         ) { page ->
             val action = actions?.get(page)
             action?.let { theAction ->
                 LaunchedEffect(pagerState.currentPage) {
                     // This block is called when the currentPage changes
-                    updateTitle("Action ${pagerState.currentPage + 1}/${it.size} ${action.type} on ${action.viewClassName}, ${if (action.viewContentDescription == "") "no contentDescription" else "contentDescription" + action.viewContentDescription} ")
+                    updateTitle("Action ${pagerState.currentPage + 1}/${it.size} ${action.type} ${action.getViewClassNameShort()}")
                 }
                 val actionImage by remember(theAction.id) {
                     viewModel.getActionImage(theAction.id)
                 }.observeAsState()
                 Log.d(
                     "ActionImageScreen",
-                    "draw action page cords:${theAction.cords} bounds:${theAction.viewBounds}  screen:${theAction.screenWidth}x${theAction.screenHeight} ${actionImage?.screenShot?.size}"
+                    "draw action page cords:${theAction.cords} bounds:${theAction.clickableViewBounds} featureBounds:${theAction.featureViewBounds}  screen:${theAction.screenWidth}x${theAction.screenHeight} ${actionImage?.screenShot?.size}"
                 )
                 actionImage?.let { theActionImage ->
-                    val imageBitmap =
-                        BitmapFactory.decodeByteArray(
-                            theActionImage.screenShot,
-                            0,
-                            theActionImage.screenShot.size
+                    Column {
+                        ImageBox(
+                            actionImage = theActionImage,
+                            action,
+                            modifier = Modifier
+                                .weight(1f)
+                                .background(Color.Black)
                         )
-                            .asImageBitmap()
-                    BoxWithConstraints(
-                        modifier
-                            .fillMaxSize()) {
-                        // Calculate aspect ratio
-                        val aspectRatioBox = maxWidth / maxHeight
-                        val aspectRatioImage =
-                            imageBitmap.width.toFloat() / imageBitmap.height.toFloat()
-                        val ratio = aspectRatioBox / aspectRatioImage
-                        val mod = if (ratio < 1) {
-                            // Image is wider than box, add vertical padding
-                            val scaledImageHeight = maxHeight.value * ratio
-                            val totalPadding = maxHeight.value - scaledImageHeight
-                            val padding = totalPadding / 2
-                            Log.d(
-                                "ActionImageScreen",
-                                "padding v $ratio $padding $aspectRatioBox $aspectRatioImage ${imageBitmap.width}x${imageBitmap.height} $maxWidth"
-                            )
-                            modifier
-                                .padding(top = padding.dp, bottom = padding.dp)
-                        } else {
-                            // Image is taller than box, add horizontal padding
-                            val scaledImageWidth = maxWidth.value / ratio
-                            val totalPadding = maxWidth.value - scaledImageWidth
-                            val padding = totalPadding / 2
-                            Log.d(
-                                "ActionImageScreen",
-                                "padding h $ratio $padding $aspectRatioBox $aspectRatioImage ${imageBitmap.width}x${imageBitmap.height} $maxWidth"
-                            )
-                            modifier
-                                .padding(start = padding.dp, end = padding.dp)
-                        }
-                        BoxWithConstraints(modifier = mod) {
-                            Image(
-                                bitmap = imageBitmap,
-                                modifier = modifier
-                                    .padding(0.dp)
-                                    .fillMaxSize(),
-                                contentDescription = "Screenshot", // Provide a description for accessibility
-                                contentScale = ContentScale.FillBounds // Adjust content scale as needed
-                            )
-//                            Box(modifier = modifier
-//                                .background(Color.Yellow)
-//                                .fillMaxSize())
-                            Image(
-                                painter = painterResource(id = R.drawable.touch_app),
-                                contentDescription = null, // Provide a suitable content description
-                                modifier = Modifier.offset(
-                                    x = (action.getRatioXOnScreen() * maxWidth.value).dp,
-                                    y = (action.getRatioYOnScreen() * maxHeight.value).dp
-                                )
-                            )
-                            Canvas(modifier = Modifier.fillMaxSize()) {
-                                // Draw the outer rectangle (the border)
-                                val rect = action.getRelativeViewBounds(
-                                    size
-                                )
-                                logger.d("rect ${action.viewBounds} $rect")
-                                drawRect(
-                                    color = Color.Red,
-                                    size = Size(
-                                        width = rect.width().toFloat(), height = rect.height()
-                                            .toFloat()
-                                    ),
-                                    topLeft = Offset(
-                                        x = rect.left.toFloat(),
-                                        y = rect.top.toFloat()
-                                    ),
-                                    style = Stroke(width = 1.dp.toPx())
-                                )
-                            }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(2.dp)
+                                .background(Color.Gray)
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {} // use the passed lambda here
+                                .padding(16.dp)
+                        ) {
+                            Text("")
                         }
                     }
+
                 }
             }
         }
+    }
+}
 
+@Composable
+fun ImageBox(actionImage: ActionImage, action: Action, modifier: Modifier) {
+    val imageBitmap =
+        BitmapFactory.decodeByteArray(
+            actionImage.screenShot,
+            0,
+            actionImage.screenShot.size
+        )
+            .asImageBitmap()
+    BoxWithConstraints(
+        modifier
+            .fillMaxSize()
+    ) {
+        // Calculate aspect ratio
+        val aspectRatioBox = maxWidth / maxHeight
+        val aspectRatioImage =
+            imageBitmap.width.toFloat() / imageBitmap.height.toFloat()
+        val ratio = aspectRatioBox / aspectRatioImage
+        val mod = if (ratio < 1) {
+            // Image is wider than box, add vertical padding
+            val scaledImageHeight = maxHeight.value * ratio
+            val totalPadding = maxHeight.value - scaledImageHeight
+            val padding = totalPadding / 2
+            Log.d(
+                "ActionImageScreen",
+                "padding v $ratio $padding $aspectRatioBox $aspectRatioImage ${imageBitmap.width}x${imageBitmap.height} $maxWidth"
+            )
+            modifier
+                .padding(top = padding.dp, bottom = padding.dp)
+        } else {
+            // Image is taller than box, add horizontal padding
+            val scaledImageWidth = maxWidth.value / ratio
+            val totalPadding = maxWidth.value - scaledImageWidth
+            val padding = totalPadding / 2
+            Log.d(
+                "ActionImageScreen",
+                "padding h $ratio $padding $aspectRatioBox $aspectRatioImage ${imageBitmap.width}x${imageBitmap.height} $maxWidth"
+            )
+            modifier
+                .padding(start = padding.dp, end = padding.dp)
+        }
+        BoxWithConstraints(modifier = mod) {
+            Image(
+                bitmap = imageBitmap,
+                modifier = modifier
+                    .padding(0.dp)
+                    .fillMaxSize(),
+                contentDescription = "Screenshot", // Provide a description for accessibility
+                contentScale = ContentScale.FillBounds // Adjust content scale as needed
+            )
+            Image(
+                painter = painterResource(id = R.drawable.touch_app),
+                contentDescription = null, // Provide a suitable content description
+                modifier = Modifier.offset(
+                    x = (action.getRatioXOnScreen() * maxWidth.value).dp,
+                    y = (action.getRatioYOnScreen() * maxHeight.value).dp
+                )
+            )
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                // Draw the outer rectangle (the border)
+                val clickRect = action.getRelativeViewBounds(
+                    action.clickableViewBounds,
+                    size
+                )
+                drawRect(
+                    color = Color.Red,
+                    size = Size(
+                        width = clickRect.width().toFloat(), height = clickRect.height()
+                            .toFloat()
+                    ),
+                    topLeft = Offset(
+                        x = clickRect.left.toFloat(),
+                        y = clickRect.top.toFloat()
+                    ),
+                    style = Stroke(width = 1.dp.toPx())
+                )
+                if (action.featureViewBounds != action.clickableViewBounds) {
+                    val featureRect = action.getRelativeViewBounds(
+                        action.featureViewBounds,
+                        size
+                    )
+                    drawRect(
+                        color = Color.Yellow,
+                        size = Size(
+                            width = featureRect.width().toFloat(), height = featureRect.height()
+                                .toFloat()
+                        ),
+                        topLeft = Offset(
+                            x = featureRect.left.toFloat(),
+                            y = featureRect.top.toFloat()
+                        ),
+                        style = Stroke(width = 1.dp.toPx())
+                    )
+                }
+            }
+        }
     }
 }
 
