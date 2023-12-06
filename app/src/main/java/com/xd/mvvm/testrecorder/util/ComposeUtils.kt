@@ -20,6 +20,8 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.data.D
 import com.xd.mvvm.testrecorder.data.Err
@@ -35,7 +38,7 @@ import com.xd.mvvm.testrecorder.data.Success
 import com.xd.mvvm.testrecorder.logger.L
 
 @Composable
-fun <T> DataLoadingContent(
+fun <T> RefreshingLoadingContent(
     data: D<T>?,
     emptyContent: @Composable () -> Unit = { EmptyContent() },
     errorContent: (@Composable (message: String) -> Unit)? = null,
@@ -84,6 +87,19 @@ fun <T> DataLoadingContent(
         PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))
     }
 
+}
+
+@Composable
+fun <T> LiveDataLoadingContent(
+    data: LiveData<T>,
+    content: @Composable (d: T) -> Unit
+) {
+    val ob by data.observeAsState()
+    ob?.let {
+        content(it)
+    } ?: run {
+        LoadingContent()
+    }
 }
 
 // PullRefreshIndicator only works with a LazyColumn?

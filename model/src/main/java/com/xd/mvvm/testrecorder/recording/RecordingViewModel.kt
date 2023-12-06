@@ -4,18 +4,25 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.projection.MediaProjectionManager
 import android.provider.Settings
-import android.text.TextUtils
+import android.provider.Settings.SettingNotFoundException
+import android.text.TextUtils.SimpleStringSplitter
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.xd.mvvm.testrecorder.accessibility.TouchAccessibilityService
 import com.xd.mvvm.testrecorder.coroutine.io
+import com.xd.mvvm.testrecorder.coroutine.ioLiveData
 import com.xd.mvvm.testrecorder.dao.ActionDao
 import com.xd.mvvm.testrecorder.dao.ActionImageDao
 import com.xd.mvvm.testrecorder.dao.RecordingDao
@@ -24,12 +31,15 @@ import com.xd.mvvm.testrecorder.data.ActionImage
 import com.xd.mvvm.testrecorder.data.D
 import com.xd.mvvm.testrecorder.data.Recording
 import com.xd.mvvm.testrecorder.data.asD
+import com.xd.mvvm.testrecorder.data.postNoneEqual
 import com.xd.mvvm.testrecorder.logger.Logger
 import com.xd.mvvm.testrecorder.overlay.OverlayService
 import com.xd.mvvm.testrecorder.recorder.RecorderService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 data class AppInfo(
     val icon: Bitmap,
@@ -46,65 +56,80 @@ class RecordingViewModel @Inject constructor(
     private val actionImageDao: ActionImageDao,
 ) : ViewModel() {
     private val logger = Logger("RecordingViewModel")
+    val apps by lazy {
+        viewModelScope.launch { queryAppsSortedByRecentUsage() }
+        MutableLiveData<List<AppInfo>>()
+    }
 
     init {
         logger.d("RecordingViewModel.init")
     }
 
     fun isAccessibilityServiceEnabled(): Boolean {
-        val expectedId = context.packageName + "/" + TouchAccessibilityService::class.java.name
-        val enabledServicesSetting = Settings.Secure.getString(
-            context.contentResolver,
-            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-        ) ?: return false
-
-        val enabledServices = TextUtils.SimpleStringSplitter(':').apply {
-            setString(enabledServicesSetting)
-        }
-
-        while (enabledServices.hasNext()) {
-            val enabledService = enabledServices.next()
-            if (expectedId == enabledService) {
-                return true
-            }
-        }
-
-        return false
+        return TouchAccessibilityService.service != null
     }
 
-    fun getAppsSortedByRecentUsage(): List<AppInfo> {
-        val pm = context.packageManager
-        val usageStatsManager =
-            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val endTime = System.currentTimeMillis()
-        val startTime = endTime - (1000 * 60 * 60 * 24) // last 24 hours
+    private fun queryAppsSortedByRecentUsage() {
+        io {
+            val pm = context.packageManager
+            val usageStatsManager =
+                context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+            val endTime = System.currentTimeMillis()
+            val startTime = endTime - (1000 * 60 * 60 * 24 * 30L) // last 30 days
 
-        val usageStatsList = usageStatsManager.queryUsageStats(
-            UsageStatsManager.INTERVAL_MONTHLY,
-            startTime,
-            endTime
-        )
-        val lastTimeUsedMap = usageStatsList.associate { it.packageName to it.lastTimeUsed }
+            val usageStatsList = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_MONTHLY,
+                startTime,
+                endTime
+            )
+            val lastTimeUsedMap = usageStatsList.associate { it.packageName to it.lastTimeUsed }
 
-        logger.d("lastTimeUsedMap $lastTimeUsedMap")
+            logger.d("lastTimeUsedMap $lastTimeUsedMap")
 
-        return pm.getInstalledApplications(PackageManager.GET_META_DATA)
-            .mapNotNull { appInfo ->
-                try {
-                    val iconDrawable = pm.getApplicationIcon(appInfo.packageName)
-                    val iconBitmap = (iconDrawable as? BitmapDrawable)?.bitmap
-                    val appName = pm.getApplicationLabel(appInfo).toString()
-                    val lastTimeUsed = lastTimeUsedMap[appInfo.packageName] ?: 0
-                    val intent =
-                        context.packageManager.getLaunchIntentForPackage(appInfo.packageName)
-                    if (iconBitmap != null && intent != null) {
-                        AppInfo(iconBitmap, appInfo.packageName, appName, lastTimeUsed)
-                    } else null
-                } catch (e: PackageManager.NameNotFoundException) {
-                    null
+            val list = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+                .mapNotNull { appInfo ->
+                    try {
+                        val iconDrawable = pm.getApplicationIcon(appInfo.packageName)
+                        val iconBitmap = drawableToBitmap(iconDrawable)
+                        val appName = pm.getApplicationLabel(appInfo).toString()
+                        val lastTimeUsed = lastTimeUsedMap[appInfo.packageName] ?: 0
+                        val intent =
+                            context.packageManager.getLaunchIntentForPackage(appInfo.packageName)
+                        logger.d("getLaunchIntentForPackage ${appInfo.packageName} ${intent != null} ${iconBitmap != null} ${iconDrawable != null}")
+                        if (iconBitmap != null && intent != null) {
+                            AppInfo(iconBitmap, appInfo.packageName, appName, lastTimeUsed)
+                        } else null
+                    } catch (e: PackageManager.NameNotFoundException) {
+                        null
+                    }
                 }
-            }
-            .sortedWith(compareByDescending<AppInfo> { it.lastTimeUsed > 0 }.thenBy { it.appName })
+                .sortedWith(
+                    compareByDescending<AppInfo> { it.lastTimeUsed > 0 }
+                        .thenComparator { a, b -> customComparator.compare(a.appName, b.appName) }
+                )
+            apps.postNoneEqual(list)
+        }
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap? {
+        // If the drawable is already a BitmapDrawable, just get the bitmap
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+
+        // Create a Bitmap with the same dimensions as the Drawable
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        // Draw the Drawable onto the Bitmap
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+
+        return bitmap
     }
 
     fun canShowOverlay(): Boolean {
@@ -145,7 +170,7 @@ class RecordingViewModel @Inject constructor(
         return recordingDao.getAllRecordings().asD()
     }
 
-    fun getActionsByRecordingId(recordingId:Long): LiveData<D<List<Action>>> {
+    fun getActionsByRecordingId(recordingId: Long): LiveData<D<List<Action>>> {
         return actionDao.getActionsByRecordingId(recordingId = recordingId).asD()
     }
 
@@ -159,4 +184,16 @@ class RecordingViewModel @Inject constructor(
     fun getActionImage(actionId: Long): LiveData<ActionImage> {
         return actionImageDao.getActionImageByActionId(actionId)
     }
+
+    val customComparator = Comparator<String> { str1, str2 ->
+        str1.zip(str2).forEach { (c1, c2) ->
+            if (c1.isASCII() && !c2.isASCII()) return@Comparator 1
+            if (!c1.isASCII() && c2.isASCII()) return@Comparator -1
+            if (c1 != c2) return@Comparator c1.compareTo(c2)
+        }
+        str1.length.compareTo(str2.length)
+    }
+
+    private fun Char.isASCII(): Boolean = this in '\u0000'..'\u007F'
 }
+

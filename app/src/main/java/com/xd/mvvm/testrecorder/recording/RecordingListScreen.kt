@@ -26,7 +26,7 @@ import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.data.Recording
 import com.xd.mvvm.testrecorder.goToActionList
 import com.xd.mvvm.testrecorder.logger.L
-import com.xd.mvvm.testrecorder.util.DataLoadingContent
+import com.xd.mvvm.testrecorder.util.RefreshingLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 
 @Composable
@@ -53,7 +53,7 @@ private fun RecordingListScreenContent(
     modifier: Modifier,
 ) {
     val data by viewModel.getAllRecordings().observeAsState()
-    DataLoadingContent(
+    RefreshingLoadingContent(
         data,
         onRefresh = { viewModel.getAllRecordings() }
     ) {

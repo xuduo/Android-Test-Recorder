@@ -38,7 +38,7 @@ fun convertImageToByteArray(image: Image, overlayHeight: Int): ByteArray {
 
     // Check if the crop amount is not greater than the image height
     val cropHeight =
-        if (overlayHeight < originalBitmap.height) originalBitmap.height - originalBitmap.height else 0
+        if (overlayHeight < originalBitmap.height) originalBitmap.height - overlayHeight else 0
 
     // Create a new bitmap with the top n pixels cropped
     val croppedBitmap = Bitmap.createBitmap(

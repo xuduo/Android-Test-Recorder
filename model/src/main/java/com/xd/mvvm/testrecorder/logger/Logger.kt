@@ -8,6 +8,10 @@ class Logger(private val tag: String) {
         Log.d(tag, message)
     }
 
+    fun v(message: String) {
+        Log.v(tag, message)
+    }
+
     fun d(message: String, t: Throwable) {
         Log.d(tag, message, t)
     }

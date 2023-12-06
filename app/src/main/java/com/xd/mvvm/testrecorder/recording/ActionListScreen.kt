@@ -24,7 +24,7 @@ import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.data.Action
 import com.xd.mvvm.testrecorder.goToActionImage
 import com.xd.mvvm.testrecorder.logger.L
-import com.xd.mvvm.testrecorder.util.DataLoadingContent
+import com.xd.mvvm.testrecorder.util.RefreshingLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 
 @Composable
@@ -55,7 +55,7 @@ private fun ActionListScreenContent(
 ) {
     val data by viewModel.getActionsByRecordingId(recordingId).observeAsState()
     L.d("RecordingViewModel.getActionsByRecordingId() ${data?.value}")
-    DataLoadingContent(
+    RefreshingLoadingContent(
         data,
         onRefresh = { viewModel.getAllRecordings() }
     ) {

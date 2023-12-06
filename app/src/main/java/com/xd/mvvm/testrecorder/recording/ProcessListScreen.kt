@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.logger.L
 import com.xd.mvvm.testrecorder.overlay.OverlayService
+import com.xd.mvvm.testrecorder.util.LiveDataLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 
 @Composable
@@ -65,11 +67,11 @@ private fun RecordingListScreenContent(
     viewModel: RecordingViewModel = hiltViewModel(),
     modifier: Modifier,
 ) {
-    val data = viewModel.getAppsSortedByRecentUsage()
-    L.d("RecordingViewModel.getAppsSortedByRecentUsage() ${data.size}")
-    LazyColumn(modifier = modifier) {
-        items(data) { appInfo ->
-            AppItem(appInfo = appInfo)
+    LiveDataLoadingContent(data = viewModel.apps) {
+        LazyColumn(modifier = modifier) {
+            items(it) { appInfo ->
+                AppItem(appInfo = appInfo)
+            }
         }
     }
 }

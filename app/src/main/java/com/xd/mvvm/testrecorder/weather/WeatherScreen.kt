@@ -38,7 +38,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.logger.L
-import com.xd.mvvm.testrecorder.util.DataLoadingContent
+import com.xd.mvvm.testrecorder.util.RefreshingLoadingContent
 import com.xd.mvvm.testrecorder.widget.AppBar
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -67,7 +67,7 @@ private fun WeatherContent(
 ) {
     val data by viewModel.weather.observeAsState()
     L.d("WeatherContent compose")
-    DataLoadingContent(
+    RefreshingLoadingContent(
         data,
         onRefresh = { viewModel.fetchWeather() }
     ) {
