@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.xd.mvvm.testrecorder.test.runner
+package com.xd.testrecorder.test.runner
 
 import android.app.Application
 import android.content.Context

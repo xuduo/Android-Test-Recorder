@@ -1,4 +1,4 @@
-package com.xd.mvvm.testrecorder.model
+package com.xd.testrecorder.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.xd.mvvm.testrecorder.model
+package com.xd.testrecorder.model
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.xd.mvvm.testrecorder.model.test", appContext.packageName)
+        assertEquals("com.xd.testrecorder.model.test", appContext.packageName)
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.xd.mvvm.testrecorder.test.utils
+package com.xd.testrecorder.test.utils
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.SemanticsMatcher
@@ -23,8 +23,8 @@ import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
-import com.xd.mvvm.testrecorder.MainActivity
-import com.xd.mvvm.testrecorder.MainNavGraph
+import com.xd.testrecorder.MainActivity
+import com.xd.testrecorder.MainNavGraph
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.Before
 import org.junit.Rule

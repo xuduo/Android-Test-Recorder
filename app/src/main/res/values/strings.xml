@@ -80,7 +80,7 @@
     <string name="overlay">Overlay</string>
     <string name="choose_app_to_record">Choose App to Record</string>
     <string name="actions">Actions</string>
-    <string name="action_list">Action List</string>
+    <string name="action_list">Generated Code</string>
     <string name="recording_list">Recording List</string>
 
 </resources>

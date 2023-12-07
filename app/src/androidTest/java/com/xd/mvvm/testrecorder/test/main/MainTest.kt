@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.xd.mvvm.testrecorder.test.main
+package com.xd.testrecorder.test.main
 
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.xd.mvvm.testrecorder.R
-import com.xd.mvvm.testrecorder.test.utils.BaseTest
+import com.xd.testrecorder.R
+import com.xd.testrecorder.test.utils.BaseTest
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 import org.junit.runner.RunWith

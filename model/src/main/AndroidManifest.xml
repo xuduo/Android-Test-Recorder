@@ -13,13 +13,13 @@
 
     <application
         android:allowBackup="false">
-        <service android:name="com.xd.mvvm.testrecorder.recorder.RecorderService"
+        <service android:name="com.xd.testrecorder.recorder.RecorderService"
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
-        <service android:name="com.xd.mvvm.testrecorder.overlay.OverlayService" />
+        <service android:name="com.xd.testrecorder.overlay.OverlayService" />
         <service
             android:exported="true"
-            android:name="com.xd.mvvm.testrecorder.accessibility.TouchAccessibilityService"
+            android:name="com.xd.testrecorder.accessibility.TouchAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
