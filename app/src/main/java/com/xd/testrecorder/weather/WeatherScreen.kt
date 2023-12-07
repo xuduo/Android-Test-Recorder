@@ -39,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.testrecorder.R
 import com.xd.testrecorder.logger.L
 import com.xd.testrecorder.util.RefreshingLoadingContent
-import com.xd.testrecorder.weather.WeatherViewModel
 import com.xd.testrecorder.widget.AppBar
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

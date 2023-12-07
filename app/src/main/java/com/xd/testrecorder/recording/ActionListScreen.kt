@@ -18,9 +18,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,7 +31,6 @@ import com.xd.testrecorder.codegen.CodeGeneratorViewModel
 import com.xd.testrecorder.coroutine.let3
 import com.xd.testrecorder.data.CodeConverterOptions
 import com.xd.testrecorder.data.Recording
-import com.xd.testrecorder.logger.L
 import com.xd.testrecorder.util.DataLoadingContent
 import com.xd.testrecorder.widget.AppBar
 import io.github.kbiakov.codeview.CodeView

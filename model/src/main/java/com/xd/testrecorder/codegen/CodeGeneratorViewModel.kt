@@ -2,8 +2,6 @@ package com.xd.testrecorder.codegen
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import com.xd.testrecorder.coroutine.ioMutable
 import com.xd.testrecorder.data.Action

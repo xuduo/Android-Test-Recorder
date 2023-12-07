@@ -31,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.testrecorder.R
-import com.xd.testrecorder.recorder.RecorderViewModel
 import com.xd.testrecorder.widget.AppBar
 
 @Composable

@@ -45,7 +45,6 @@ import com.xd.testrecorder.data.Action
 import com.xd.testrecorder.data.ActionCodeConverter
 import com.xd.testrecorder.data.ActionImage
 import com.xd.testrecorder.data.CodeConverterOptions
-import com.xd.testrecorder.recording.RecordingViewModel
 import com.xd.testrecorder.widget.AppBar
 
 @Composable
