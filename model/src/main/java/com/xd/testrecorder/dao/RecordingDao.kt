@@ -33,7 +33,7 @@ interface RecordingDao {
 
     // Query a single recording by ID
     @Query("SELECT * FROM recordings WHERE id = :id")
-    suspend fun getRecordingById(id: Long): Recording?
+    fun getRecordingById(id: Long): LiveData<Recording>
 
     // Query recordings by name
     @Query("SELECT * FROM recordings WHERE name LIKE :name")

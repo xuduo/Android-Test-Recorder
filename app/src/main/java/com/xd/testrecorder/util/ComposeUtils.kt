@@ -20,8 +20,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -29,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
 import com.xd.testrecorder.R
 import com.xd.testrecorder.data.D
 import com.xd.testrecorder.data.Err
@@ -58,7 +55,7 @@ fun <T> RefreshingLoadingContent(
 
             is Err -> {
                 L.d("DataLoadingContent D.Error")
-                wrapInLazyColumn {
+                WrapInLazyColumn {
                     if (errorContent != null) {
                         errorContent(data.errorMessage)
                     } else {
@@ -73,13 +70,13 @@ fun <T> RefreshingLoadingContent(
                 data.value?.let {
                     content(it)
                 } ?: run {
-                    wrapInLazyColumn {
+                    WrapInLazyColumn {
                         LoadingContent()
                     }
                 }
             }
 
-            null -> wrapInLazyColumn {
+            null -> WrapInLazyColumn {
                 emptyContent()
             }
         }
@@ -90,21 +87,38 @@ fun <T> RefreshingLoadingContent(
 }
 
 @Composable
-fun <T> LiveDataLoadingContent(
-    data: LiveData<T>,
+fun <T> DataLoadingContent(
+    data: T?,
+    loadingContent: (@Composable () -> Unit)? = null,
+    emptyContent: (@Composable () -> Unit)? = null,
     content: @Composable (d: T) -> Unit
 ) {
-    val ob by data.observeAsState()
-    ob?.let {
-        content(it)
+    data?.let {
+        if (it is Collection<*>) {
+            // data is a Collection, you can get its size
+            val size = it.size
+            if (size == 0) {
+                emptyContent?.let {
+                    emptyContent()
+                } ?: run {
+                    EmptyContent()
+                }
+            } else {
+                content(it)
+            }
+        }
     } ?: run {
-        LoadingContent()
+        loadingContent?.let {
+            loadingContent()
+        } ?: run {
+            LoadingContent()
+        }
     }
 }
 
 // PullRefreshIndicator only works with a LazyColumn?
 @Composable
-private fun wrapInLazyColumn(content: @Composable () -> Unit) {
+private fun WrapInLazyColumn(content: @Composable () -> Unit) {
     LazyColumn(Modifier.fillMaxSize()) {
         items(1) {
             Box(Modifier.fillParentMaxSize()) {

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -27,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,9 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.testrecorder.R
 import com.xd.testrecorder.overlay.OverlayService
-import com.xd.testrecorder.recording.AppInfo
-import com.xd.testrecorder.recording.RecordingViewModel
-import com.xd.testrecorder.util.LiveDataLoadingContent
+import com.xd.testrecorder.util.DataLoadingContent
 import com.xd.testrecorder.widget.AppBar
 
 @Composable
@@ -67,10 +65,11 @@ private fun RecordingListScreenContent(
     viewModel: RecordingViewModel = hiltViewModel(),
     modifier: Modifier,
 ) {
-    LiveDataLoadingContent(data = viewModel.apps) {
+    val data by viewModel.apps.observeAsState()
+    DataLoadingContent(data) {
         LazyColumn(modifier = modifier) {
-            items(it) { appInfo ->
-                AppItem(appInfo = appInfo)
+            items(it.size) { index->
+                AppItem(appInfo = it[index])
             }
         }
     }

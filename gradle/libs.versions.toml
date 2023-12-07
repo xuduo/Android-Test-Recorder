@@ -64,6 +64,7 @@ material = "1.10.0"
 moshi = "1.15.0"
 runtime-livedata = "1.5.4"
 opencv = "4.7.0-1.5.9"
+codeview = "1.3.2"
 
 [libraries]
 accompanist-appcompat-theme = { group = "com.google.accompanist", name = "accompanist-themeadapter-appcompat", version.ref = "accompanist" }
@@ -152,6 +153,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshikotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 opencv = { group = "org.bytedeco", name = "opencv", version.ref = "opencv" }
+codeview = { group = "com.github.kbiakov", name = "CodeView-Android", version.ref = "codeview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -112,18 +112,6 @@ android {
             jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
     }
-//    tasks.withType<org.jetbrains.kotlin.ksp.gradle.KspKotlinGradleSubplugin>().configureEach {
-//        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-//    }
-//    tasks.withType<kspDebugKotlin>().configureEach {
-//        // Java 11 is required to run tests
-////        javaLauncher.set(
-////            javaToolchains.launcherFor {
-////                languageVersion.set(JavaLanguageVersion.of(18))
-////            }
-////        )
-//        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-//    }
 }
 
 /*
@@ -161,6 +149,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.accompanist.appcompat.theme)
     implementation(libs.accompanist.swiperefresh)
+    implementation(libs.codeview)
 
     debugImplementation(composeBom)
     debugImplementation(libs.androidx.compose.ui.tooling.core)

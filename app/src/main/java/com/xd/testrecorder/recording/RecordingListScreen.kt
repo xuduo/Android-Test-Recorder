@@ -14,6 +14,9 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -24,8 +27,7 @@ import com.xd.testrecorder.R
 import com.xd.testrecorder.data.RecordingWithActionCount
 import com.xd.testrecorder.goToActionList
 import com.xd.testrecorder.logger.L
-import com.xd.testrecorder.recording.RecordingViewModel
-import com.xd.testrecorder.util.LiveDataLoadingContent
+import com.xd.testrecorder.util.DataLoadingContent
 import com.xd.testrecorder.widget.AppBar
 
 @Composable
@@ -51,8 +53,8 @@ private fun RecordingListScreenContent(
     viewModel: RecordingViewModel = hiltViewModel(),
     modifier: Modifier,
 ) {
-    val data = viewModel.getAllRecordings()
-    LiveDataLoadingContent(
+    val data by remember { viewModel.getAllRecordings() }.observeAsState()
+    DataLoadingContent(
         data
     ) {
         LazyColumn {

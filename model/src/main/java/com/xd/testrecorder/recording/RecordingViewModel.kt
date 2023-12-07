@@ -165,6 +165,10 @@ class RecordingViewModel @Inject constructor(
         return recordingDao.getRecordingsWithActionCount()
     }
 
+    fun getRecordingById(id:Long): LiveData<Recording> {
+        return recordingDao.getRecordingById(id)
+    }
+
     fun getActionsByRecordingId(recordingId: Long): LiveData<List<Action>> {
         return actionDao.getActionsByRecordingId(recordingId = recordingId)
     }

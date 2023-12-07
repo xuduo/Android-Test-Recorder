@@ -55,12 +55,12 @@ class SharedPreferencesHelper @Inject constructor(
             val adapter = moshi.adapter(clazz)
             if (jsonString != null) {
                 logger.d("getObject $key ${System.currentTimeMillis() - timestamp}")
-                return adapter.fromJson(jsonString)
+                return adapter.fromJson(jsonString) ?: defaultValue
             }
         } catch (e: Exception) {
             logger.e("getObject error occurred: ${e.message}")
         }
-        return null
+        return defaultValue
     }
 
     // Int
