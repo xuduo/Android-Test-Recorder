@@ -42,19 +42,21 @@ class CodeGeneratorViewModel @Inject constructor(
         this.options.postNoneEqual(options)
     }
 
-    fun getConverter(): ActionCodeConverter {
+    private fun getConverter(): ActionCodeConverter {
         return ActionCodeConverter.getConverter(options.value!!)
     }
 
     fun generateCode(recording: Recording, actions: List<Action>): CodeBlock {
         val converter = getConverter()
-        var code = converter.getFun("${"unnamed"}() {")
+        var code = converter.getFun("${recording.id}")
+        var funLines = code.lines().size
         for (action in actions) {
             code += "\n\t${converter.toCode(action)}"
         }
+        code += "\n\t//click on the code above to see the captured screenshot"
         code += "\n\t//add you assertions"
         code += "\n}"
-        return CodeBlock(code = code, funLines = 1)
+        return CodeBlock(code = code, funLines = funLines)
     }
 
 }

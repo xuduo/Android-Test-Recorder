@@ -3,6 +3,7 @@ package com.xd.testrecorder.recording
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,13 +26,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xd.common.coroutine.let3
 import com.xd.common.nav.LocalLogger
+import com.xd.common.nav.LocalNavController
 import com.xd.common.widget.AppBar
-import com.xd.common.widget.DataLoadingContent
+import com.xd.common.widget.LoadingContent
 import com.xd.testrecorder.R
 import com.xd.testrecorder.codegen.CodeGeneratorViewModel
 import com.xd.testrecorder.data.CodeConverterOptions
 import com.xd.testrecorder.data.Recording
+import com.xd.testrecorder.goToActionImage
 import io.github.kbiakov.codeview.CodeView
 import io.github.kbiakov.codeview.OnCodeLineClickListener
 import io.github.kbiakov.codeview.adapters.Format
@@ -56,20 +60,6 @@ fun ActionListScreen(
             modifier = Modifier.padding(it)
         )
     }
-    @Composable
-    fun ExampleComposable(nullableValue: String?) {
-        nullableValue?.let { nonNullValue ->
-            // This is a let block
-            MyTextComposable(text = nonNullValue) // Calling a Composable function inside the let block
-        }
-    }
-
-
-}
-
-@Composable
-fun MyTextComposable(text: String) {
-    Text(text = text)
 }
 
 @Composable
@@ -87,18 +77,23 @@ private fun ActionListScreenContent(
     val logger = LocalLogger.current
     LocalLogger.current.d("RecordingViewModel.getActionsByRecordingId() $dataL")
     val context = LocalContext.current
-    com.xd.common.coroutine.let3(dataL, recordingL, optionsL) { data, recording, options ->
+
+    let3(dataL, recordingL, optionsL) { actions, recording, options ->
         val copy = {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val code = codeGenModel.generateCode(recording, actions).code
             val clip = ClipData.newPlainText(
-                "label",
-                codeGenModel.generateCode(recording, data).toString()
+                "code",
+                code
             )
             clipboard.setPrimaryClip(clip)
+            Toast
+                .makeText(context, "${code.lines().size} lines of code copied", Toast.LENGTH_SHORT)
+                .show()
         }
         Column {
             SingleChoiceView(
-                title = "Language",
+                title = "Language:",
                 options = listOf("Java", "Kotlin"),
                 options,
                 copy = copy
@@ -106,36 +101,42 @@ private fun ActionListScreenContent(
                 // Handle the selected option
                 options.copy(lang = selectedOption).let { codeGenModel.updateOptions(it) }
             }
-            val converter = codeGenModel.getConverter()
-            DataLoadingContent(
-                data
-            ) {
-                val code = codeGenModel.generateCode(Recording(), actions = it)
-                AndroidView(factory = { ctx ->
-                    // Create an Android View here. For example, a TextView.
-                    CodeView(ctx).apply {
-                        this.setOptions(
-                            Options.get(ctx)
-                                .withLanguage("kotlin")
-                                .withFormat(
-                                    Format(scaleFactor = 1.5f, fontSize = 18.dp.value)
-                                )
-                                .addCodeLineClickListener(object : OnCodeLineClickListener {
-                                    override fun onCodeLineClicked(n: Int, line: String) {
-                                        // Implement your logic here
-                                        logger.i("code clicked ${n - code.funLines},$line")
+
+            val code = codeGenModel.generateCode(Recording(), actions = actions)
+            val nav = LocalNavController.current
+            AndroidView(factory = { ctx ->
+                // Create an Android View here. For example, a TextView.
+                CodeView(ctx).apply {
+                    this.setOptions(
+                        Options.get(ctx)
+                            .withLanguage("kotlin")
+                            .withFormat(
+                                Format(scaleFactor = 1.5f, fontSize = 18.dp.value)
+                            )
+                            .addCodeLineClickListener(object : OnCodeLineClickListener {
+                                override fun onCodeLineClicked(n: Int, line: String) {
+                                    // Implement your logic here
+                                    val index = n - code.funLines
+                                    logger.i("code clicked ${index},$line")
+                                    if (index in actions.indices) {
+                                        nav.goToActionImage(
+                                            recordingId = recordingId,
+                                            actions[index].id
+                                        )
                                     }
-                                })
-                                .withCode(code.code)
-                                .withTheme(ColorTheme.SOLARIZED_LIGHT)
-                        )
-                    }
-                },
-                    update = { view ->
-                        view.setCode(code = code.code)
-                    })
-            }
+                                }
+                            })
+                            .withCode(code.code)
+                            .withTheme(ColorTheme.SOLARIZED_LIGHT)
+                    )
+                }
+            },
+                update = { view ->
+                    view.setCode(code = code.code)
+                })
         }
+    } ?: run {
+        LoadingContent()
     }
 }
 
@@ -148,7 +149,7 @@ fun SingleChoiceView(
     onOptionSelected: (String) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = title, Modifier.padding(horizontal = 4.dp))
+        Text(text = title, Modifier.padding(start = 8.dp))
         Row {
             options.forEach { option ->
                 Row(

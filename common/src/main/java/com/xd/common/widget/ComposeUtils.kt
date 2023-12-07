@@ -6,6 +6,13 @@ package com.xd.common.widget
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,8 +27,12 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -150,7 +161,7 @@ private fun EmptyContent(
 }
 
 @Composable
-private fun LoadingContent(
+fun LoadingContent(
     modifier: Modifier = Modifier,
     @DrawableRes noTasksIconRes: Int = R.drawable.loading
 ) {
@@ -159,9 +170,9 @@ private fun LoadingContent(
             .fillMaxSize()
             .padding(32.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
+        AnimatedImage(
             painter = painterResource(id = noTasksIconRes),
             contentDescription = stringResource(R.string.loading),
             modifier = Modifier.size(96.dp)
@@ -191,4 +202,28 @@ private fun ErrorContent(
         )
         Text(message)
     }
+}
+
+
+@Composable
+fun AnimatedImage(
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    contentDescription: String,
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "rotate")
+    val animatedDegrees by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ), label = "rotate"
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = contentDescription,
+        modifier = modifier.rotate(animatedDegrees)
+    )
 }

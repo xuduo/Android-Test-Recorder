@@ -25,6 +25,7 @@ import com.xd.testrecorder.data.convertMotionEventsToAction
 import com.xd.testrecorder.recorder.RecorderService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -99,11 +100,11 @@ class OverlayService : Service() {
 //        overlayView.setBackgroundColor(Color.parseColor("#60FF0000"))
 
 // Set OnTouchListener
-        overlayView.setOnTouchListener { _, event ->
+        overlayView.setOnTouchListener { view, event ->
             // Handle touch events here
             logger.d("OnTouchListener $event ${isPassThrough()}")
             if (isPassThrough()) {
-                true
+                return@setOnTouchListener false
             }
             motionEventList.add(copyMotionEvent(event))
             when (event.action) {
@@ -118,7 +119,7 @@ class OverlayService : Service() {
                     handleMotionActionUp()
                 }
             }
-            false // Return true if the listener has consumed the event, false otherwise.
+            true // Return true if the listener has consumed the event, false otherwise.
         }
 
 // Update your WindowManager LayoutParams
@@ -215,6 +216,7 @@ class OverlayService : Service() {
                 )
                 actionImageDao.insertActionImage(actionImage)
                 logger.i("insert action success $action")
+                delay(100)
                 withContext(Dispatchers.Main) {
                     TouchAccessibilityService.dispatchGesture(
                         gesture,
@@ -230,6 +232,9 @@ class OverlayService : Service() {
             changeToCapture()
         } else {
             changeToPassThrough()
+        }
+        if (TouchAccessibilityService.service == null) {
+            stopSelf()
         }
     }
 

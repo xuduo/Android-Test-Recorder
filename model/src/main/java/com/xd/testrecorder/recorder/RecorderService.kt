@@ -21,6 +21,7 @@ import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.xd.common.logger.Logger
+import com.xd.testrecorder.accessibility.TouchAccessibilityService
 import com.xd.testrecorder.model.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -126,6 +127,9 @@ class RecorderService : Service() {
                 latestImage?.close()
                 logger.v("imageReader on frame ${image.format}")
                 latestImage = image
+            }
+            if (TouchAccessibilityService.service == null) {
+                stopSelf()
             }
         }, null)
         recording = true

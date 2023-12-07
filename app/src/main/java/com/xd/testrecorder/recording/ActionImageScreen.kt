@@ -1,7 +1,11 @@
 package com.xd.testrecorder.recording
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -36,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -123,9 +128,22 @@ private fun ActionImageScreenContent(
                                 .clickable {} // use the passed lambda here
                                 .padding(16.dp)
                         ) {
+                            val code = ActionCodeConverter.getConverter(CodeConverterOptions())
+                                .toCode(action)
+                            val context = LocalContext.current
                             Text(
-                                text = ActionCodeConverter.getConverter(CodeConverterOptions())
-                                    .toCode(action)
+                                text = code,
+                                Modifier.clickable{
+                                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = ClipData.newPlainText(
+                                        "code",
+                                        code
+                                    )
+                                    clipboard.setPrimaryClip(clip)
+                                    Toast
+                                        .makeText(context, "Code copied", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                             )
                         }
                     }
@@ -143,8 +161,7 @@ fun ImageBox(actionImage: ActionImage, action: Action, modifier: Modifier) {
             actionImage.screenShot,
             0,
             actionImage.screenShot.size
-        )
-            .asImageBitmap()
+        ).asImageBitmap()
     BoxWithConstraints(
         modifier
             .fillMaxSize()
@@ -210,7 +227,7 @@ fun ImageBox(actionImage: ActionImage, action: Action, modifier: Modifier) {
                         x = clickRect.left.toFloat(),
                         y = clickRect.top.toFloat()
                     ),
-                    style = Stroke(width = 1.dp.toPx())
+                    style = Stroke(width = 2.dp.toPx())
                 )
                 if (action.featureViewBounds != action.clickableViewBounds) {
                     val featureRect = action.getRelativeViewBounds(
@@ -218,7 +235,7 @@ fun ImageBox(actionImage: ActionImage, action: Action, modifier: Modifier) {
                         size
                     )
                     drawRect(
-                        color = Color.Yellow,
+                        color = Color.Blue,
                         size = Size(
                             width = featureRect.width().toFloat(), height = featureRect.height()
                                 .toFloat()
@@ -227,7 +244,7 @@ fun ImageBox(actionImage: ActionImage, action: Action, modifier: Modifier) {
                             x = featureRect.left.toFloat(),
                             y = featureRect.top.toFloat()
                         ),
-                        style = Stroke(width = 1.dp.toPx())
+                        style = Stroke(width = 2.dp.toPx())
                     )
                 }
             }

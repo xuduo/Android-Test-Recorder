@@ -72,6 +72,7 @@ class TouchAccessibilityService : AccessibilityService() {
         logger.d("onDestroy")
         service = null
         recordingPackageName = "not.recording"
+        OverlayService.service?.adjustPassThrough()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -160,7 +161,12 @@ class TouchAccessibilityService : AccessibilityService() {
                     // Compare the bounds to find the smallest node
                     val foundNodeBounds = Rect()
                     foundNode.getBoundsInScreen(foundNodeBounds)
-                    if (bestMatch == null || foundNodeBounds.width() * foundNodeBounds.height() < nodeBounds.width() * nodeBounds.height()) {
+                    // find the smallest or the shortest text
+                    if (bestMatch == null || foundNodeBounds.width() * foundNodeBounds.height() < nodeBounds.width() * nodeBounds.height() ||
+                        (foundNode.contentDescription?.length
+                            ?: 0) < (bestMatch?.contentDescription?.length ?: 0) ||
+                        (foundNode.text?.length ?: 0) < (bestMatch?.text?.length ?: 0)
+                    ) {
                         bestMatch = foundNode
                     }
                 }
