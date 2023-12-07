@@ -2,10 +2,10 @@ package com.xd.testrecorder.data;
 
 import android.content.Context
 import androidx.room.Room
+import com.xd.common.logger.Logger
 import com.xd.testrecorder.dao.ActionDao
 import com.xd.testrecorder.dao.ActionImageDao
 import com.xd.testrecorder.dao.RecordingDao
-import com.xd.testrecorder.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

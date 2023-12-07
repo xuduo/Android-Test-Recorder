@@ -26,15 +26,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.xd.testrecorder.logger.Logger
+import com.xd.common.logger.Logger
 import com.xd.testrecorder.main.MainScreen
 import com.xd.testrecorder.recorder.RecorderScreen
 import com.xd.testrecorder.recording.ActionImageScreen
 import com.xd.testrecorder.recording.ActionListScreen
 import com.xd.testrecorder.recording.ProcessListScreen
 import com.xd.testrecorder.recording.RecordingListScreen
-import com.xd.testrecorder.weather.CachedWeatherScreen
-import com.xd.testrecorder.weather.WeatherScreen
 
 val LocalNavController = compositionLocalOf<NavController> {
     error("No NavController provided")
@@ -64,14 +62,8 @@ fun MainNavGraph(
             ) {
                 MainScreen()
             }
-            composable(MainDestinations.WEATHER) {
-                WeatherScreen()
-            }
             composable(MainDestinations.RECORD) {
                 RecorderScreen()
-            }
-            composable(MainDestinations.CACHED_WEATHER) {
-                CachedWeatherScreen()
             }
             composable(MainDestinations.PROCESS_LIST) {
                 ProcessListScreen()

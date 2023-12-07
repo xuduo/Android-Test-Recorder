@@ -42,7 +42,7 @@ fun RecorderScreen(
         scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize(),
         topBar = {
-            AppBar(R.string.weather)
+            AppBar(R.string.record_screen)
         },
     ) {
         RecorderScreenContent(modifier = Modifier

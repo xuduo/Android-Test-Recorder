@@ -18,7 +18,7 @@ package com.xd.testrecorder.accessibility
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.xd.testrecorder.logger.Logger
+import com.xd.common.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

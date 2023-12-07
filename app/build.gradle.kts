@@ -122,6 +122,7 @@ dependencies {
 
     // App dependencies
     implementation(project(":model"))
+    implementation(project(":common"))
     implementation(libs.androidx.annotation)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.test.espresso.idling.resources)

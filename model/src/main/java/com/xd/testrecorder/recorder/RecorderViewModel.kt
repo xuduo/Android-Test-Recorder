@@ -24,10 +24,10 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
-import com.xd.testrecorder.coroutine.io
+import com.xd.common.coroutine.io
+import com.xd.common.logger.Logger
 import com.xd.testrecorder.dao.RecordingDao
 import com.xd.testrecorder.data.Recording
-import com.xd.testrecorder.logger.Logger
 import com.xd.testrecorder.recording.AppInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

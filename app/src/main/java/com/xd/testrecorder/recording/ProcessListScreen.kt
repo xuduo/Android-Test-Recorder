@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.testrecorder.R
 import com.xd.testrecorder.overlay.OverlayService
-import com.xd.testrecorder.util.DataLoadingContent
 import com.xd.testrecorder.widget.AppBar
 
 @Composable
@@ -66,9 +65,9 @@ private fun RecordingListScreenContent(
     modifier: Modifier,
 ) {
     val data by viewModel.apps.observeAsState()
-    DataLoadingContent(data) {
+    com.xd.common.util.DataLoadingContent(data) {
         LazyColumn(modifier = modifier) {
-            items(it.size) { index->
+            items(it.size) { index ->
                 AppItem(appInfo = it[index])
             }
         }

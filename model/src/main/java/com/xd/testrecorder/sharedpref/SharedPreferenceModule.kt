@@ -2,6 +2,9 @@ package com.xd.testrecorder.sharedpref
 
 import android.content.Context
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.xd.common.data.LocalDateTimeAdapter
+import com.xd.common.sharedpref.SharedPreferencesHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,29 +29,8 @@ object SharedPreferencesModule {
 
     @Provides
     @Singleton
-    @Named("cache")
-    fun provideSharedPreferencesHelperCache(
-        @ApplicationContext context: Context,
-        moshi: Moshi
-    ): SharedPreferencesHelper {
-        return SharedPreferencesHelper(context, "cache", moshi)
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder().add(KotlinJsonAdapterFactory()).add(LocalDateTimeAdapter()).build()
     }
 
-    @Provides
-    @Singleton
-    @Named("config_simulate_http_error")
-    fun provideHttpError(
-        @Named("config") sharedPreferencesHelper: SharedPreferencesHelper
-    ): BooleanSharedPreferenceLiveData {
-        return sharedPreferencesHelper.getBooleanLiveData("simulate_http_error")
-    }
-
-    @Provides
-    @Singleton
-    @Named("config_simulate_http_latency")
-    fun provideHttpLatency(
-        @Named("config") sharedPreferencesHelper: SharedPreferencesHelper
-    ): BooleanSharedPreferenceLiveData {
-        return sharedPreferencesHelper.getBooleanLiveData("simulate_http_latency")
-    }
 }

@@ -31,5 +31,7 @@ dependencyResolutionManagement {
 }
 
 include(":app")
+include(":dummy-app-for-testing")
+include(":common")
 include(":model")
 //include(":opencv")

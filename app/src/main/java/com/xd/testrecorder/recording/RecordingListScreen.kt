@@ -22,12 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xd.common.util.DataLoadingContent
 import com.xd.testrecorder.LocalNavController
 import com.xd.testrecorder.R
 import com.xd.testrecorder.data.RecordingWithActionCount
 import com.xd.testrecorder.goToActionList
-import com.xd.testrecorder.logger.L
-import com.xd.testrecorder.util.DataLoadingContent
 import com.xd.testrecorder.widget.AppBar
 
 @Composable
@@ -58,7 +57,6 @@ private fun RecordingListScreenContent(
         data
     ) {
         LazyColumn {
-            L.d("WeatherContent RecordingListScreenContent ${it.size}")
             items(it.size) { index ->
                 Item(
                     it[index]

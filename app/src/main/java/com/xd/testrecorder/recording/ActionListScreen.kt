@@ -28,10 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.testrecorder.LocalLogger
 import com.xd.testrecorder.R
 import com.xd.testrecorder.codegen.CodeGeneratorViewModel
-import com.xd.testrecorder.coroutine.let3
 import com.xd.testrecorder.data.CodeConverterOptions
 import com.xd.testrecorder.data.Recording
-import com.xd.testrecorder.util.DataLoadingContent
 import com.xd.testrecorder.widget.AppBar
 import io.github.kbiakov.codeview.CodeView
 import io.github.kbiakov.codeview.OnCodeLineClickListener
@@ -86,46 +84,54 @@ private fun ActionListScreenContent(
     val logger = LocalLogger.current
     LocalLogger.current.d("RecordingViewModel.getActionsByRecordingId() $dataL")
     val context = LocalContext.current
-    let3(dataL, recordingL,optionsL){ data, recording, options->
+    com.xd.common.coroutine.let3(dataL, recordingL, optionsL) { data, recording, options ->
         val copy = {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("label", codeGenModel.generateCode(recording, data).toString())
+            val clip = ClipData.newPlainText(
+                "label",
+                codeGenModel.generateCode(recording, data).toString()
+            )
             clipboard.setPrimaryClip(clip)
         }
         Column {
-            SingleChoiceView(title = "Language", options = listOf("Java", "Kotlin"), options, copy = copy) { selectedOption ->
+            SingleChoiceView(
+                title = "Language",
+                options = listOf("Java", "Kotlin"),
+                options,
+                copy = copy
+            ) { selectedOption ->
                 // Handle the selected option
                 options.copy(lang = selectedOption).let { codeGenModel.updateOptions(it) }
             }
-                val converter = codeGenModel.getConverter()
-                DataLoadingContent(
-                    data
-                ) {
-                    val code = codeGenModel.generateCode(Recording(), actions = it)
-                    AndroidView(factory = { ctx ->
-                        // Create an Android View here. For example, a TextView.
-                        CodeView(ctx).apply {
-                            this.setOptions(
-                                Options.Default.get(ctx)
-                                    .withLanguage("kotlin")
-                                    .withFormat(
-                                        Format(scaleFactor = 1.5f, fontSize = 18.dp.value)
-                                    )
-                                    .addCodeLineClickListener(object : OnCodeLineClickListener {
-                                        override fun onCodeLineClicked(n: Int, line: String) {
-                                            // Implement your logic here
-                                            logger.i("code clicked ${n - code.funLines},$line")
-                                        }
-                                    })
-                                    .withCode(code.code)
-                                    .withTheme(ColorTheme.SOLARIZED_LIGHT)
-                            )
-                        }
-                    },
-                        update = { view ->
-                            view.setCode(code = code.code)
-                        })
-                }
+            val converter = codeGenModel.getConverter()
+            com.xd.common.util.DataLoadingContent(
+                data
+            ) {
+                val code = codeGenModel.generateCode(Recording(), actions = it)
+                AndroidView(factory = { ctx ->
+                    // Create an Android View here. For example, a TextView.
+                    CodeView(ctx).apply {
+                        this.setOptions(
+                            Options.get(ctx)
+                                .withLanguage("kotlin")
+                                .withFormat(
+                                    Format(scaleFactor = 1.5f, fontSize = 18.dp.value)
+                                )
+                                .addCodeLineClickListener(object : OnCodeLineClickListener {
+                                    override fun onCodeLineClicked(n: Int, line: String) {
+                                        // Implement your logic here
+                                        logger.i("code clicked ${n - code.funLines},$line")
+                                    }
+                                })
+                                .withCode(code.code)
+                                .withTheme(ColorTheme.SOLARIZED_LIGHT)
+                        )
+                    }
+                },
+                    update = { view ->
+                        view.setCode(code = code.code)
+                    })
+            }
         }
     }
 }
@@ -134,7 +140,7 @@ private fun ActionListScreenContent(
 fun SingleChoiceView(
     title: String,
     options: List<String>,
-    codeOptions:CodeConverterOptions,
+    codeOptions: CodeConverterOptions,
     copy: () -> Unit,
     onOptionSelected: (String) -> Unit
 ) {

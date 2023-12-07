@@ -20,7 +20,7 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.xd.testrecorder.logger.Logger
+import com.xd.common.logger.Logger
 import com.xd.testrecorder.model.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

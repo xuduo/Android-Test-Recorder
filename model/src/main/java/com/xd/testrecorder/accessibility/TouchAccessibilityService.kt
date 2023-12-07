@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.graphics.toRect
-import com.xd.testrecorder.logger.Logger
+import com.xd.common.logger.Logger
 import com.xd.testrecorder.overlay.OverlayService
 import java.text.SimpleDateFormat
 import java.util.Date
