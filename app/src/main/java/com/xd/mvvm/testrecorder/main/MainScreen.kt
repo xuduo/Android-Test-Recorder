@@ -97,7 +97,7 @@ fun MainScreen(
                 }
             }
             MainScreenItem(text = stringResource(R.string.overlay)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+                if (!Settings.canDrawOverlays(context)) {
                     // Show an alert dialog or notification asking the user to enable the permission in settings
                     val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}"))
                     startForResult.launch(intent)

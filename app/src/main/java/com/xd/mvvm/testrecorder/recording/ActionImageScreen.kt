@@ -42,7 +42,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.mvvm.testrecorder.LocalLogger
 import com.xd.mvvm.testrecorder.R
 import com.xd.mvvm.testrecorder.data.Action
+import com.xd.mvvm.testrecorder.data.ActionCodeConverter
 import com.xd.mvvm.testrecorder.data.ActionImage
+import com.xd.mvvm.testrecorder.data.CodeConverterOptions
 import com.xd.mvvm.testrecorder.widget.AppBar
 
 @Composable
@@ -123,7 +125,10 @@ private fun ActionImageScreenContent(
                                 .clickable {} // use the passed lambda here
                                 .padding(16.dp)
                         ) {
-                            Text("")
+                            Text(
+                                text = ActionCodeConverter.getConverter(CodeConverterOptions())
+                                    .toCode(action)
+                            )
                         }
                     }
 
@@ -230,23 +235,4 @@ fun ImageBox(actionImage: ActionImage, action: Action, modifier: Modifier) {
             }
         }
     }
-}
-
-fun translateRealToUI(
-    imageWidth: Int,
-    imageHeight: Int, x: Int, // Relative 0 to imageWidth
-    y: Int,
-) {
-
-}
-
-@Composable
-fun ClickImage(
-    imageWidth: Int,
-    imageHeight: Int,
-    x: Int, // Relative 0 to imageWidth
-    y: Int, // Relative 0 to imageHeight
-    modifier: Modifier = Modifier
-) {
-
 }
