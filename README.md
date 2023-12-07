@@ -21,9 +21,9 @@ The Android Test Recorder is a powerful tool for automating UI tests, similar to
    ![Capture](readmes/capture.png)
 2. **Automatic Script Generation**: Automatically generates test scripts based on captured user interactions.
    ![CodeGen](readmes/gencode.png)
-3. **Helper Code for Test Classes**: Incorporates helper code in your base test class, with an example provided for Kotlin & UIAutomator.
+3. **Helper Code for Test Classes**: Incorporates helper code in your base test class.
 
-### Helper Code Example
+### Helper Code Example(Kotlin & UIAutomator)
 
 ```kotlin
 import androidx.test.uiautomator.By
