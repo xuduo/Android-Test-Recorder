@@ -1,4 +1,4 @@
-package com.xd.testrecorder.data;
+package com.xd.testrecorder.data
 
 import android.content.Context
 import androidx.room.Room

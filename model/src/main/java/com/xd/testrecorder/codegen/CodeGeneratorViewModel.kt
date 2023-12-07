@@ -1,7 +1,6 @@
 package com.xd.testrecorder.codegen
 
 import android.content.Context
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.xd.common.coroutine.ioMutable
 import com.xd.common.data.postNoneEqual
@@ -15,14 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Named
-
-
-data class AppInfo(
-    val icon: Bitmap,
-    val packageName: String,
-    val appName: String,
-    val lastTimeUsed: Long
-)
 
 @HiltViewModel
 class CodeGeneratorViewModel @Inject constructor(
