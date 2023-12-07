@@ -131,9 +131,9 @@ private fun WrapInLazyColumn(content: @Composable () -> Unit) {
 @Preview
 @Composable
 private fun EmptyContent(
+    modifier: Modifier = Modifier,
     @StringRes noTasksLabel: Int = R.string.no_data,
-    @DrawableRes noTasksIconRes: Int = R.drawable.no_data,
-    modifier: Modifier = Modifier
+    @DrawableRes noTasksIconRes: Int = R.drawable.no_data
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -151,8 +151,8 @@ private fun EmptyContent(
 
 @Composable
 private fun LoadingContent(
-    @DrawableRes noTasksIconRes: Int = R.drawable.loading,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    @DrawableRes noTasksIconRes: Int = R.drawable.loading
 ) {
     Column(
         modifier = modifier
@@ -172,9 +172,9 @@ private fun LoadingContent(
 
 @Composable
 private fun ErrorContent(
+    modifier: Modifier = Modifier,
     message: String,
-    @DrawableRes noTasksIconRes: Int = R.drawable.request_error,
-    modifier: Modifier = Modifier
+    @DrawableRes noTasksIconRes: Int = R.drawable.request_error
 ) {
     Column(
         modifier = modifier
