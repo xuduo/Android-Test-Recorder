@@ -1,4 +1,4 @@
-package com.xd.testrecorder.widget
+package com.xd.common.widget
 
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -8,8 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.xd.testrecorder.LocalNavController
-import com.xd.testrecorder.R
+import com.xd.common.nav.LocalNavController
+import com.xd.testrecorder.model.R
 
 @Composable
 fun AppBar(titleId: Int = 0, titleText: String = "", showBackButton: Boolean = true) {

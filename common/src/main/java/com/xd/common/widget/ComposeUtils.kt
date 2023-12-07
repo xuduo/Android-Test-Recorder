@@ -1,7 +1,8 @@
 @file:OptIn(
     ExperimentalMaterialApi::class
 )
-package com.xd.common.util
+
+package com.xd.common.widget
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

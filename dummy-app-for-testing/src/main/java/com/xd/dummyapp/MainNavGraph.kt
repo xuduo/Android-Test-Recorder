@@ -18,26 +18,19 @@ package com.xd.dummyapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xd.common.logger.Logger
+import com.xd.common.nav.LocalLogger
+import com.xd.common.nav.LocalNavController
 import com.xd.dummyapp.main.MainScreen
 import com.xd.dummyapp.weather.CachedWeatherScreen
 import com.xd.dummyapp.weather.WeatherScreen
 
-val LocalNavController = compositionLocalOf<NavController> {
-    error("No NavController provided")
-}
-
-val LocalLogger = compositionLocalOf<Logger> {
-    error("No LocalLogger provided")
-}
 
 @Composable
 fun MainNavGraph(
@@ -48,7 +41,10 @@ fun MainNavGraph(
     },
     startDestination: String = MainDestinations.MAIN
 ) {
-    CompositionLocalProvider(LocalNavController provides navController, LocalLogger provides logger) {
+    CompositionLocalProvider(
+        LocalNavController provides navController,
+        LocalLogger provides logger
+    ) {
         NavHost(
             navController = navController,
             startDestination = startDestination,

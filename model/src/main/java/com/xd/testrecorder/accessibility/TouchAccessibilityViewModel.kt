@@ -34,7 +34,7 @@ class TouchAccessibilityViewModel @Inject constructor(
         logger.d("TouchAccessibilityViewModel.init")
     }
 
-    fun testClick(){
+    fun testClick() {
         TouchAccessibilityService.service?.testDispatch()
     }
 

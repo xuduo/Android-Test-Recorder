@@ -18,15 +18,15 @@ package com.xd.testrecorder
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xd.common.logger.Logger
+import com.xd.common.nav.LocalLogger
+import com.xd.common.nav.LocalNavController
 import com.xd.testrecorder.main.MainScreen
 import com.xd.testrecorder.recorder.RecorderScreen
 import com.xd.testrecorder.recording.ActionImageScreen
@@ -34,13 +34,6 @@ import com.xd.testrecorder.recording.ActionListScreen
 import com.xd.testrecorder.recording.ProcessListScreen
 import com.xd.testrecorder.recording.RecordingListScreen
 
-val LocalNavController = compositionLocalOf<NavController> {
-    error("No NavController provided")
-}
-
-val LocalLogger = compositionLocalOf<Logger> {
-    error("No LocalLogger provided")
-}
 
 @Composable
 fun MainNavGraph(
@@ -51,7 +44,10 @@ fun MainNavGraph(
     },
     startDestination: String = MainDestinations.MAIN
 ) {
-    CompositionLocalProvider(LocalNavController provides navController, LocalLogger provides logger) {
+    CompositionLocalProvider(
+        LocalNavController provides navController,
+        LocalLogger provides logger
+    ) {
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -71,14 +67,16 @@ fun MainNavGraph(
             composable(MainDestinations.RECORDING_LIST) {
                 RecordingListScreen()
             }
-            composable("${MainDestinations.ACTION_LIST}/{recordingId}") { backStackEntry->
-                val recordingId = backStackEntry.arguments?.getString("recordingId")?.toLongOrNull() ?: 0L
+            composable("${MainDestinations.ACTION_LIST}/{recordingId}") { backStackEntry ->
+                val recordingId =
+                    backStackEntry.arguments?.getString("recordingId")?.toLongOrNull() ?: 0L
                 ActionListScreen(recordingId)
             }
-            composable("${MainDestinations.ACTION_IMAGE}/{recordingId}/{actionId}") { backStackEntry->
-                val recordingId = backStackEntry.arguments?.getString("recordingId")?.toLongOrNull() ?: 0L
+            composable("${MainDestinations.ACTION_IMAGE}/{recordingId}/{actionId}") { backStackEntry ->
+                val recordingId =
+                    backStackEntry.arguments?.getString("recordingId")?.toLongOrNull() ?: 0L
                 val actionId = backStackEntry.arguments?.getString("actionId")?.toLongOrNull() ?: 0L
-                ActionImageScreen(recordingId,actionId)
+                ActionImageScreen(recordingId, actionId)
             }
         }
     }

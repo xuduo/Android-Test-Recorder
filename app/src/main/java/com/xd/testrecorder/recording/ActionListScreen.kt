@@ -25,12 +25,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.xd.testrecorder.LocalLogger
+import com.xd.common.nav.LocalLogger
+import com.xd.common.widget.AppBar
+import com.xd.common.widget.DataLoadingContent
 import com.xd.testrecorder.R
 import com.xd.testrecorder.codegen.CodeGeneratorViewModel
 import com.xd.testrecorder.data.CodeConverterOptions
 import com.xd.testrecorder.data.Recording
-import com.xd.testrecorder.widget.AppBar
 import io.github.kbiakov.codeview.CodeView
 import io.github.kbiakov.codeview.OnCodeLineClickListener
 import io.github.kbiakov.codeview.adapters.Format
@@ -65,10 +66,12 @@ fun ActionListScreen(
 
 
 }
+
 @Composable
 fun MyTextComposable(text: String) {
     Text(text = text)
 }
+
 @Composable
 private fun ActionListScreenContent(
     recordingId: Long,
@@ -104,7 +107,7 @@ private fun ActionListScreenContent(
                 options.copy(lang = selectedOption).let { codeGenModel.updateOptions(it) }
             }
             val converter = codeGenModel.getConverter()
-            com.xd.common.util.DataLoadingContent(
+            DataLoadingContent(
                 data
             ) {
                 val code = codeGenModel.generateCode(Recording(), actions = it)

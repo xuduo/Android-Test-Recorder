@@ -22,12 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.xd.common.util.DataLoadingContent
-import com.xd.testrecorder.LocalNavController
+import com.xd.common.nav.LocalNavController
+import com.xd.common.widget.AppBar
+import com.xd.common.widget.DataLoadingContent
 import com.xd.testrecorder.R
 import com.xd.testrecorder.data.RecordingWithActionCount
 import com.xd.testrecorder.goToActionList
-import com.xd.testrecorder.widget.AppBar
 
 @Composable
 fun RecordingListScreen(

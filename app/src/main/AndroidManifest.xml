@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright 2019 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,11 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.xd.testrecorder">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.xd.testrecorder">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:usesCleartextTraffic="false"
         android:allowBackup="false"
         android:name=".MainApplication"
         android:icon="@mipmap/ic_launcher"

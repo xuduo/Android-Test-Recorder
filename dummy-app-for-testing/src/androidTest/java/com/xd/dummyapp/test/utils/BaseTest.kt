@@ -59,7 +59,7 @@ open class BaseTest {
     }
 
 
-    protected fun hasStringR(r:Int): SemanticsMatcher {
+    protected fun hasStringR(r: Int): SemanticsMatcher {
         return hasText(getStringR(r))
     }
 

@@ -20,11 +20,11 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.xd.dummyapp.R
 import com.xd.dummyapp.test.utils.BaseTest
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.xd.dummyapp.R
 
 /**
  * Large End-to-End test for the tasks module.
@@ -35,23 +35,25 @@ import com.xd.dummyapp.R
 class MainTest : BaseTest() {
 
     @Test
-    fun testWeather1Navigation(){
+    fun testWeather1Navigation() {
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_label)).performClick()
 
         // Click on the back button in the action bar
-        composeTestRule.onNodeWithContentDescription(getStringR(R.string.navigate_up)).performClick()
+        composeTestRule.onNodeWithContentDescription(getStringR(R.string.navigate_up))
+            .performClick()
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_label)).assertExists()
     }
 
     @Test
-    fun testWeather2Navigation(){
+    fun testWeather2Navigation() {
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_cache_label)).performClick()
 
         // Click on the back button in the action bar
-        composeTestRule.onNodeWithContentDescription(getStringR(R.string.navigate_up)).performClick()
+        composeTestRule.onNodeWithContentDescription(getStringR(R.string.navigate_up))
+            .performClick()
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_cache_label)).assertExists()
     }

@@ -45,7 +45,7 @@ data class Loading<T>(override val value: T? = null) : D<T>() {
 }
 
 fun <T> nullToLoading(value: T?): D<T> {
-    return if(value == null){
+    return if (value == null) {
         Loading(null)
     } else {
         Success(value)

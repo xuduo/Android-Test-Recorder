@@ -46,14 +46,20 @@ android {
             isMinifyEnabled = false
             isTestCoverageEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            testProguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguardTest-rules.pro")
+            testProguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguardTest-rules.pro"
+            )
         }
 
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            testProguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguardTest-rules.pro")
+            testProguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguardTest-rules.pro"
+            )
         }
     }
 
@@ -89,7 +95,7 @@ android {
         jvmTarget = "1.8"
     }
 
-//    kotlin {
+    //    kotlin {
 //        jvmToolchain(18)
 //    }
     fun Packaging.() {

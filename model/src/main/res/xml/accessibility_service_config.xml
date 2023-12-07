@@ -4,4 +4,4 @@
     android:accessibilityFeedbackType="feedbackAllMask"
     android:canPerformGestures="true"
     android:canRetrieveWindowContent="true"
-    android:settingsActivity=""/>
+    android:settingsActivity="" />

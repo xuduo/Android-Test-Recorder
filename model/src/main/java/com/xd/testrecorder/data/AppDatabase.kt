@@ -62,7 +62,11 @@ class CordsConverter {
     private val moshi = Moshi.Builder()
         .add(PairAdapter())
         .build()
-    private val pairType = Types.newParameterizedType(Pair::class.java, Int::class.javaObjectType, Int::class.javaObjectType)
+    private val pairType = Types.newParameterizedType(
+        Pair::class.java,
+        Int::class.javaObjectType,
+        Int::class.javaObjectType
+    )
     private val listType = Types.newParameterizedType(List::class.java, pairType)
     private val jsonAdapter = moshi.adapter<List<Pair<Int, Int>>>(listType)
 

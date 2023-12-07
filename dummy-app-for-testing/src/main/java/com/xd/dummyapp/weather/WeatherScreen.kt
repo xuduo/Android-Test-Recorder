@@ -11,11 +11,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.xd.dummyapp.LocalLogger
+import com.xd.common.nav.LocalLogger
+import com.xd.common.widget.AppBar
+import com.xd.common.widget.RefreshingLoadingContent
 import com.xd.dummyapp.R
 import com.xd.dummyapp.model.weather.WeatherViewModel
-import com.xd.dummyapp.util.RefreshingLoadingContent
-import com.xd.dummyapp.widget.AppBar
 
 @Composable
 fun WeatherScreen(
@@ -29,8 +29,10 @@ fun WeatherScreen(
             AppBar(R.string.weather)
         },
     ) {
-        WeatherContent(modifier = Modifier
-            .padding(it))
+        WeatherContent(
+            modifier = Modifier
+                .padding(it)
+        )
     }
 }
 
@@ -48,7 +50,7 @@ private fun WeatherContent(
     ) {
         LazyColumn {
             logger.d("WeatherContent LazyColumn ${it.hourly.temperature.size}")
-            items(it.hourly.temperature.size){index->
+            items(it.hourly.temperature.size) { index ->
                 Item(
                     temperature = it.hourly.temperature[index],
                     dateTime = it.hourly.time[index]

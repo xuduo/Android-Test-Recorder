@@ -40,11 +40,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.xd.dummyapp.LocalNavController
+import com.xd.common.nav.LocalNavController
+import com.xd.common.widget.AppBar
 import com.xd.dummyapp.MainDestinations
 import com.xd.dummyapp.R
 import com.xd.dummyapp.model.ConfigViewModel
-import com.xd.dummyapp.widget.AppBar
 
 @Composable
 fun MainScreen(

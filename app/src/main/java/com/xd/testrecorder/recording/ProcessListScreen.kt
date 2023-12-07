@@ -37,9 +37,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xd.common.widget.AppBar
+import com.xd.common.widget.DataLoadingContent
 import com.xd.testrecorder.R
 import com.xd.testrecorder.overlay.OverlayService
-import com.xd.testrecorder.widget.AppBar
 
 @Composable
 fun ProcessListScreen(
@@ -65,7 +66,7 @@ private fun RecordingListScreenContent(
     modifier: Modifier,
 ) {
     val data by viewModel.apps.observeAsState()
-    com.xd.common.util.DataLoadingContent(data) {
+    DataLoadingContent(data) {
         LazyColumn(modifier = modifier) {
             items(it.size) { index ->
                 AppItem(appInfo = it[index])
@@ -204,7 +205,7 @@ private fun AppItem(
     }
 }
 
-private fun startApp(viewModel: RecordingViewModel, context: Context, appInfo: AppInfo){
+private fun startApp(viewModel: RecordingViewModel, context: Context, appInfo: AppInfo) {
     val intent = context.packageManager.getLaunchIntentForPackage(appInfo.packageName)
     if (intent != null) {
         // If there is a launchable activity, start it

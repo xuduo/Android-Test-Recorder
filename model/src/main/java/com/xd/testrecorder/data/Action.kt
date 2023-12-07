@@ -40,7 +40,7 @@ data class Action(
     var clickableViewClassName: String = "",
     var featureViewClassName: String = ""
 ) {
-    fun getRelativeViewBounds(bounds:Rect, size: Size): Rect {
+    fun getRelativeViewBounds(bounds: Rect, size: Size): Rect {
         return Rect(
             (bounds.left * size.width / screenWidth).toInt(),
             (bounds.top * size.height / screenHeight).toInt(),

@@ -28,10 +28,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xd.common.widget.AppBar
+import com.xd.common.widget.RefreshingLoadingContent
 import com.xd.dummyapp.R
 import com.xd.dummyapp.model.weather.CachedWeatherViewModel
-import com.xd.dummyapp.util.RefreshingLoadingContent
-import com.xd.dummyapp.widget.AppBar
 
 @Composable
 fun CachedWeatherScreen(
@@ -45,8 +45,10 @@ fun CachedWeatherScreen(
             AppBar(R.string.cached_weather)
         },
     ) {
-        WeatherContent(modifier = Modifier
-            .padding(it))
+        WeatherContent(
+            modifier = Modifier
+                .padding(it)
+        )
     }
 }
 

@@ -2,10 +2,11 @@
 
 ## Contributor License Agreements
 
-We'd love to accept your patches! Before we can take them, we 
+We'd love to accept your patches! Before we can take them, we
 have to jump a couple of legal hurdles.
 
 ### Before you contribute
+
 Before we can use your code, you must sign the
 [Google Individual Contributor License Agreement](https://cla.developers.google.com/about/google-individual)
 (CLA), which you can do online. The CLA is necessary mainly because you own the
@@ -21,10 +22,12 @@ possibly guide you. Coordinating up front makes it much easier to avoid
 frustration later on.
 
 ### Code reviews
+
 All submissions, including submissions by project members, require review. We
 use Github pull requests for this purpose.
 
 ### The small print
+
 Contributions made by corporations are covered by a different agreement than
 the one above, the
 [Software Grant and Corporate Contributor License Agreement](https://cla.developers.google.com/about/google-corporate).

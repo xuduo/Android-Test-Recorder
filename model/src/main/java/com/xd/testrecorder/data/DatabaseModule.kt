@@ -27,7 +27,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase {
         val timestamp = System.currentTimeMillis()
-        val module =  Room.databaseBuilder(
+        val module = Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
             "app_db"

@@ -25,11 +25,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.xd.dummyapp.R
 import com.xd.dummyapp.test.utils.BaseTest
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.xd.dummyapp.R
 
 /**
  * Large End-to-End test for the tasks module.
@@ -41,19 +41,27 @@ import com.xd.dummyapp.R
 class WeatherTest : BaseTest() {
 
     @Test
-    fun testWeather(){
+    fun testWeather() {
         composeTestRule.onNode(hasStringR(R.string.enter_weather_label)).performClick()
         composeTestRule.onNode(hasStringR(R.string.weather)).assertExists()
         composeTestRule.onNode(hasStringR(R.string.loading)).assertExists()
-        composeTestRule.waitUntilAtLeastOneExists(hasText("°C", substring = true, ignoreCase = true),5000)
-        composeTestRule.onNodeWithContentDescription(getStringR(R.string.navigate_up)).performClick()
+        composeTestRule.waitUntilAtLeastOneExists(
+            hasText(
+                "°C",
+                substring = true,
+                ignoreCase = true
+            ), 5000
+        )
+        composeTestRule.onNodeWithContentDescription(getStringR(R.string.navigate_up))
+            .performClick()
         // Click on the back button in the action bar
-        composeTestRule.onNodeWithTag(getStringR(R.string.simulate_http_error)).assertIsOff().performClick()
+        composeTestRule.onNodeWithTag(getStringR(R.string.simulate_http_error)).assertIsOff()
+            .performClick()
 
         composeTestRule.onNode(hasStringR(R.string.enter_weather_label)).performClick()
         composeTestRule.onNode(hasStringR(R.string.weather)).assertExists()
         composeTestRule.onNode(hasStringR(R.string.loading)).assertExists()
-        composeTestRule.waitUntilAtLeastOneExists(hasTestTag(getStringR(R.string.error)),10000)
+        composeTestRule.waitUntilAtLeastOneExists(hasTestTag(getStringR(R.string.error)), 10000)
     }
 
 }

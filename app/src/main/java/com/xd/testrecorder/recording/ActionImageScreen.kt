@@ -39,13 +39,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.xd.testrecorder.LocalLogger
+import com.xd.common.widget.AppBar
 import com.xd.testrecorder.R
 import com.xd.testrecorder.data.Action
 import com.xd.testrecorder.data.ActionCodeConverter
 import com.xd.testrecorder.data.ActionImage
 import com.xd.testrecorder.data.CodeConverterOptions
-import com.xd.testrecorder.widget.AppBar
 
 @Composable
 fun ActionImageScreen(
@@ -80,7 +79,6 @@ private fun ActionImageScreenContent(
     viewModel: RecordingViewModel = hiltViewModel(),
     modifier: Modifier,
 ) {
-    val logger = LocalLogger.current
     val actions by viewModel.getActionsByRecordingId(recordingId)
         .observeAsState()
     actions?.let {

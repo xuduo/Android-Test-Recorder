@@ -13,6 +13,6 @@ class ScriptingViewModel @Inject constructor(
 
     init {
         logger.d("RecordingViewModel.init")
-            System.loadLibrary("opencv_java4")
-        }
+        System.loadLibrary("opencv_java4")
+    }
 }

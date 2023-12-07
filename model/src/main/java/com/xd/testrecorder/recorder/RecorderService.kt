@@ -39,7 +39,7 @@ class RecorderService : Service() {
         var resultCode = 0
         const val ID_MEDIA_PROJECTION_SERVICE = 101
 
-        fun isRecording():Boolean {
+        fun isRecording(): Boolean {
             return service?.recording == true
         }
 
