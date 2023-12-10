@@ -8,7 +8,7 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=xuduo_Android-Test-Recorder&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=xuduo_Android-Test-Recorder)
 
 ## Introduction
-The Android Test Recorder is a powerful tool for automating UI tests, similar to [Google's Espresso Test Recorder](https://developer.android.com/studio/test/other-testing-tools/espresso-test-recorder). It simplifies the process of creating test scripts for Android applications.
+The Android Test Recorder is a tool for automating UI tests, similar to [Google's Espresso Test Recorder](https://developer.android.com/studio/test/other-testing-tools/espresso-test-recorder). It simplifies the process of creating test scripts for Android applications.
 
 ## Compatibility and Features
 - Runs in the Android OS, don't need adb connection
