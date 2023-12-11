@@ -8,7 +8,6 @@ import android.content.Intent
 import android.gesture.GestureOverlayView
 import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
 import android.view.MotionEvent
@@ -100,7 +99,7 @@ class OverlayService : Service() {
 
 // Set OnTouchListener
 
-        overlayView.setOnTouchListener { view, event ->
+        overlayView.setOnTouchListener { _, event ->
             // Handle touch events here
             logger.d("OnTouchListener $event")
             if (isPassThrough()) {
@@ -125,8 +124,8 @@ class OverlayService : Service() {
 // Update your WindowManager LayoutParams
 
         params.gravity = Gravity.TOP or Gravity.START
-        params.x = 0;
-        params.y = 0;
+        params.x = 0
+        params.y = 0
         params.flags = flagsCapture
 
         overlayView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {

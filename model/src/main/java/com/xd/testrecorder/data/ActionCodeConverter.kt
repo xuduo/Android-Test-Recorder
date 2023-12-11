@@ -7,15 +7,13 @@ sealed class ActionCodeConverter {
     lateinit var options: CodeConverterOptions
 
     fun toCode(action: Action): String {
-        var code = ""
-        if (action.viewContentDescription.isNotEmpty()) {
-            code = "clickContentDescription(\"${action.viewContentDescription}\")"
+        return if (action.viewContentDescription.isNotEmpty()) {
+            "clickContentDescription(\"${action.viewContentDescription}\")"
         } else if (action.viewText.isNotEmpty()) {
-            code = "clickText(\"${action.viewText}\")"
-        } else{
-            code = "// no ContentDescription or Text detected"
+            "clickText(\"${action.viewText}\")"
+        } else {
+            "// no ContentDescription or Text detected"
         }
-        return code
     }
 
     abstract fun getFun(name: String): String

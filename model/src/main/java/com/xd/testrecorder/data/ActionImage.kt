@@ -8,7 +8,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 @Entity(
     tableName = "action_images",

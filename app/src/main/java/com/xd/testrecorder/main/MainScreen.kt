@@ -28,23 +28,19 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.xd.common.nav.LocalNavController
 import com.xd.common.widget.AppBar
 import com.xd.testrecorder.MainDestinations
 import com.xd.testrecorder.R
-import com.xd.testrecorder.accessibility.TouchAccessibilityViewModel
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    touchAccessibilityViewModel: TouchAccessibilityViewModel = hiltViewModel(),
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -54,7 +50,6 @@ fun MainScreen(
         modifier = modifier.fillMaxSize()
     )
     {
-        val context = LocalContext.current
         val nav = LocalNavController.current
         Column {
             Modifier.padding(it)
