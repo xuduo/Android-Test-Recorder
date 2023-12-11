@@ -32,7 +32,7 @@ data class ActionImage(
 )
 
 fun convertImageToByteArray(image: Image, cropTop: Int = 0, cropHeight: Int = 0): ByteArray {
-    Log.d("convertImageToByteArray", "convertImageToByteArray ${image.width} ${image.height}")
+    Log.d("convertImageToByteArray", "convertImageToByteArray ${image.width} ${image.height} $cropTop")
     val originalBitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
     originalBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
 
@@ -59,11 +59,4 @@ fun convertImageToByteArray(image: Image, cropTop: Int = 0, cropHeight: Int = 0)
     stream.close()
 
     return byteArray
-}
-
-private fun getBitmapFromRGBA(bytes: ByteArray, width: Int, height: Int): Bitmap {
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val buffer = ByteBuffer.wrap(bytes)
-    bitmap.copyPixelsFromBuffer(buffer)
-    return bitmap
 }

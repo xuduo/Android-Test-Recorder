@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import com.xd.common.logger.Logger
 import com.xd.testrecorder.accessibility.TouchAccessibilityService
 import com.xd.testrecorder.model.R
+import com.xd.testrecorder.service.serviceFailed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -73,6 +74,10 @@ class RecorderService : Service() {
         logger.i("RecorderService onCreate")
         service = this
         CoroutineScope(Dispatchers.Main).launch {
+            if (serviceFailed()) {
+                stopSelf()
+                return@launch
+            }
             delay(1000L)
             startRecording()
         }
@@ -147,13 +152,6 @@ class RecorderService : Service() {
         service = null
         latestImage?.close()
         latestImage = null
-    }
-
-    private fun convertNanosecondsToReadable(timestamp: Long): String {
-        val instant = Instant.ofEpochSecond(0, timestamp)
-        val formatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.systemDefault())
-        return formatter.format(instant)
     }
 
     private fun createNotification(): Notification {

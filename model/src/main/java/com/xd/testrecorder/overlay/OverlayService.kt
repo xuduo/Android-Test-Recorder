@@ -2,6 +2,7 @@ package com.xd.testrecorder.overlay
 
 import android.accessibilityservice.AccessibilityService.GestureResultCallback
 import android.accessibilityservice.GestureDescription
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.gesture.GestureOverlayView
@@ -23,6 +24,7 @@ import com.xd.testrecorder.data.ActionImage
 import com.xd.testrecorder.data.convertImageToByteArray
 import com.xd.testrecorder.data.convertMotionEventsToAction
 import com.xd.testrecorder.recorder.RecorderService
+import com.xd.testrecorder.service.serviceFailed
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,6 +35,7 @@ import javax.inject.Inject
 class OverlayService : Service() {
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         var service: OverlayService? = null
     }
 
@@ -46,11 +49,7 @@ class OverlayService : Service() {
 
     private lateinit var windowManager: WindowManager
     private lateinit var overlayView: View
-    private val type: Int = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-        WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-    } else {
-        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-    }
+    private val type: Int = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
     private val flagsPassThrough = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
@@ -100,9 +99,10 @@ class OverlayService : Service() {
 //        overlayView.setBackgroundColor(Color.parseColor("#60FF0000"))
 
 // Set OnTouchListener
+
         overlayView.setOnTouchListener { view, event ->
             // Handle touch events here
-            logger.d("OnTouchListener $event ${isPassThrough()}")
+            logger.d("OnTouchListener $event")
             if (isPassThrough()) {
                 return@setOnTouchListener false
             }
@@ -127,12 +127,7 @@ class OverlayService : Service() {
         params.gravity = Gravity.TOP or Gravity.START
         params.x = 0;
         params.y = 0;
-
-        if (TouchAccessibilityService.isTargetPackage()) {
-            params.flags = flagsCapture
-        } else {
-            params.flags = flagsPassThrough
-        }
+        params.flags = flagsCapture
 
         overlayView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
@@ -149,6 +144,9 @@ class OverlayService : Service() {
     }
 
     private fun handleMotionActionUp() {
+        if (serviceFailed()) {
+            return
+        }
         changeToPassThrough()
         if (recordingId < 0) {
             logger.e("recordingId less than 0")
@@ -190,32 +188,34 @@ class OverlayService : Service() {
                     )
                     action.clickableViewClassName = node.className?.toString() ?: ""
                     action.featureViewClassName = node.className?.toString() ?: ""
-                }
-                val feature = pair.second
-                if (feature != null && feature != node) {
-                    action.viewContentDescription = feature.contentDescription?.toString() ?: ""
-                    action.viewText = feature.text?.toString() ?: ""
-                    val rect = Rect()
-                    feature.getBoundsInScreen(rect)
-                    action.featureViewBounds = Rect(
-                        rect.left,
-                        rect.top - TouchAccessibilityService.getStatusBarHeight(),
-                        rect.right,
-                        rect.bottom - TouchAccessibilityService.getStatusBarHeight()
+                    val feature = pair.second
+                    if (feature != null && feature != node) {
+                        action.viewContentDescription = feature.contentDescription?.toString() ?: ""
+                        action.viewText = feature.text?.toString() ?: ""
+                        val rect = Rect()
+                        feature.getBoundsInScreen(rect)
+                        action.featureViewBounds = Rect(
+                            rect.left,
+                            rect.top - TouchAccessibilityService.getStatusBarHeight(),
+                            rect.right,
+                            rect.bottom - TouchAccessibilityService.getStatusBarHeight()
+                        )
+                        action.featureViewClassName = feature.className?.toString() ?: ""
+                    }
+                    val actionId = actionDao.insertAction(action)
+                    val actionImage = ActionImage(
+                        actionId = actionId,
+                        screenShot = convertImageToByteArray(
+                            image,
+                            TouchAccessibilityService.getStatusBarHeight(),
+                            overlayView.height
+                        )
                     )
-                    action.featureViewClassName = feature.className?.toString() ?: ""
+                    actionImageDao.insertActionImage(actionImage)
+                    logger.i("insert action success $action")
+                } else {
+                    logger.i("not target package skip insert")
                 }
-                val actionId = actionDao.insertAction(action)
-                val actionImage = ActionImage(
-                    actionId = actionId,
-                    screenShot = convertImageToByteArray(
-                        image,
-                        TouchAccessibilityService.getStatusBarHeight(),
-                        overlayView.height
-                    )
-                )
-                actionImageDao.insertActionImage(actionImage)
-                logger.i("insert action success $action")
                 delay(100)
                 withContext(Dispatchers.Main) {
                     TouchAccessibilityService.dispatchGesture(
@@ -224,17 +224,6 @@ class OverlayService : Service() {
                     )
                 }
             }
-        }
-    }
-
-    fun adjustPassThrough() {
-        if (TouchAccessibilityService.isTargetPackage()) {
-            changeToCapture()
-        } else {
-            changeToPassThrough()
-        }
-        if (TouchAccessibilityService.service == null) {
-            stopSelf()
         }
     }
 
@@ -266,7 +255,7 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        logger.d("onDestroy")
+        logger.i("onDestroy")
         service = null
         removeOverlay()
     }

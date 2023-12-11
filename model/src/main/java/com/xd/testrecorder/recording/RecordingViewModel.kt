@@ -90,8 +90,8 @@ class RecordingViewModel @Inject constructor(
                         val lastTimeUsed = lastTimeUsedMap[appInfo.packageName] ?: 0
                         val intent =
                             context.packageManager.getLaunchIntentForPackage(appInfo.packageName)
-                        logger.v("getLaunchIntentForPackage ${appInfo.packageName} ${intent != null} ${iconBitmap != null} ${iconDrawable != null}")
-                        if (iconBitmap != null && intent != null) {
+                        logger.v("getLaunchIntentForPackage ${appInfo.packageName} ${intent != null} ${iconBitmap != null}")
+                        if (iconBitmap != null && intent != null && context.packageName != appInfo.packageName) {
                             AppInfo(iconBitmap, appInfo.packageName, appName, lastTimeUsed)
                         } else null
                     } catch (e: PackageManager.NameNotFoundException) {

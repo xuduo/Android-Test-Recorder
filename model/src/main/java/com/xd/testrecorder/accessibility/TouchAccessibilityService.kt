@@ -11,6 +11,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.graphics.toRect
 import com.xd.common.logger.Logger
 import com.xd.testrecorder.overlay.OverlayService
+import com.xd.testrecorder.service.serviceFailed
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -24,10 +25,6 @@ class TouchAccessibilityService : AccessibilityService() {
 
     companion object {
         var service: TouchAccessibilityService? = null
-
-        fun isTargetPackage(): Boolean {
-            return service?.recordingPackageName == service?.foregroundPackageName
-        }
 
         fun getStatusBarHeight(): Int {
             return service?.getStatusBarHeight() ?: 0
@@ -69,10 +66,10 @@ class TouchAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        logger.d("onDestroy")
+        logger.i("onDestroy")
         service = null
         recordingPackageName = "not.recording"
-        OverlayService.service?.adjustPassThrough()
+        OverlayService.service?.serviceFailed()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -83,23 +80,6 @@ class TouchAccessibilityService : AccessibilityService() {
                 )
             }"
         )
-        if (event.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_START) {
-            // タッチイベントが開始した時の処理
-            logger.d("TYPE_TOUCH_INTERACTION_START $event")
-        }
-
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            if (event.packageName != null) {
-                foregroundPackageName = event.packageName.toString()
-            }
-            logger.i("TYPE_WINDOW_STATE_CHANGED $foregroundPackageName")
-            OverlayService.service?.adjustPassThrough()
-        }
-
-        if (event.eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_END) {
-            // タッチイベントが終了した時の処理
-            logger.d("TYPE_TOUCH_INTERACTION_END $event")
-        }
     }
 
     fun getViewForGesture(gesture: GestureDescription?): Pair<AccessibilityNodeInfo?, AccessibilityNodeInfo?> {

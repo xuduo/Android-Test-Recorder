@@ -12,6 +12,8 @@ sealed class ActionCodeConverter {
             code = "clickContentDescription(\"${action.viewContentDescription}\")"
         } else if (action.viewText.isNotEmpty()) {
             code = "clickText(\"${action.viewText}\")"
+        } else{
+            code = "// no ContentDescription or Text detected"
         }
         return code
     }
