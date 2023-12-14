@@ -28,6 +28,7 @@ import com.xd.common.logger.Logger
 import com.xd.common.nav.LocalLogger
 import com.xd.common.nav.LocalNavController
 import com.xd.dummyapp.main.MainScreen
+import com.xd.dummyapp.time.TimeScreen
 import com.xd.dummyapp.weather.CachedWeatherScreen
 import com.xd.dummyapp.weather.WeatherScreen
 
@@ -60,6 +61,9 @@ fun MainNavGraph(
             }
             composable(MainDestinations.CACHED_WEATHER) {
                 CachedWeatherScreen()
+            }
+            composable(MainDestinations.CURRENT_TIME_STAMP) {
+                TimeScreen()
             }
         }
     }

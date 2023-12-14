@@ -23,5 +23,6 @@ object MainDestinations {
     const val MAIN = "main"
     const val WEATHER = "weather"
     const val CACHED_WEATHER = "cached_weather"
+    const val CURRENT_TIME_STAMP = "current_time_stamp"
 }
 

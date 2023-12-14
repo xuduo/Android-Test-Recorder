@@ -79,5 +79,6 @@
     <string name="actions">Actions</string>
     <string name="action_list">Generated Code</string>
     <string name="recording_list">Recording List</string>
+    <string name="current_time_stamp">Current Timestamp</string>
 
 </resources>

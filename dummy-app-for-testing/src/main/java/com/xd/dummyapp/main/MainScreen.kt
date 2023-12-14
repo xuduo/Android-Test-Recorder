@@ -68,6 +68,9 @@ fun MainScreen(
             MainScreenItem(text = stringResource(id = R.string.enter_weather_cache_label)) {
                 nav.navigate(MainDestinations.CACHED_WEATHER)
             }
+            MainScreenItem(text = stringResource(id = R.string.current_time_stamp)) {
+                nav.navigate(MainDestinations.CURRENT_TIME_STAMP)
+            }
             SimulateErrorConfig()
             SimulateHttpLatencyConfig()
         }
