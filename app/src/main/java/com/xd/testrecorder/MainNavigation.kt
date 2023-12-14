@@ -26,8 +26,7 @@ import com.xd.testrecorder.MainDestinations.ACTION_LIST
 object MainDestinations {
     const val RECORD = "RECORD"
     const val MAIN = "main"
-    const val WEATHER = "weather"
-    const val CACHED_WEATHER = "cached_weather"
+    const val RUN_PYTHON = "run_python"
     const val PROCESS_LIST = "process_list"
     const val RECORDING_LIST = "recording_list"
     const val ACTION_LIST = "action_list"

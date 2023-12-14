@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.Packaging
-
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -21,6 +19,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+//    alias(libs.plugins.chaquopy)
 }
 
 android {
@@ -40,12 +39,18 @@ android {
                 arguments += "room.incremental" to "true"
             }
         }
+
+//        python {
+//            pip {
+//                install("matplotlib")
+//            }
+//        }
     }
 
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
-            isTestCoverageEnabled = true
+            enableAndroidTestCoverage = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             testProguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
@@ -94,15 +99,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-
-    //    kotlin {
-//        jvmToolchain(18)
-//    }
-    fun Packaging.() {
-        resources {
-            excludes += setOf("META-INF/AL2.0", "META-INF/LGPL2.1")
-        }
     }
 
     composeOptions {

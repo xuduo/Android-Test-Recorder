@@ -28,6 +28,7 @@ import com.xd.common.logger.Logger
 import com.xd.common.nav.LocalLogger
 import com.xd.common.nav.LocalNavController
 import com.xd.testrecorder.main.MainScreen
+import com.xd.testrecorder.python.RunPythonScreen
 import com.xd.testrecorder.recorder.RecorderScreen
 import com.xd.testrecorder.recording.ActionImageScreen
 import com.xd.testrecorder.recording.ActionListScreen
@@ -66,6 +67,9 @@ fun MainNavGraph(
             }
             composable(MainDestinations.RECORDING_LIST) {
                 RecordingListScreen()
+            }
+            composable(MainDestinations.RUN_PYTHON) {
+                RunPythonScreen()
             }
             composable("${MainDestinations.ACTION_LIST}/{recordingId}") { backStackEntry ->
                 val recordingId =

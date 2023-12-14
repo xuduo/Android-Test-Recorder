@@ -59,6 +59,9 @@ fun MainScreen(
             MainScreenItem(text = "Recording List") {
                 nav.navigate(MainDestinations.RECORDING_LIST)
             }
+            MainScreenItem(text = "Run Python Code") {
+                nav.navigate(MainDestinations.RUN_PYTHON)
+            }
         }
     }
 }
